@@ -25,11 +25,10 @@ export function QuizCard({ quiz }: QuizCardProps) {
           </div>
         </div>
         <span
-          className={`px-3 py-1 rounded-full text-xs font-medium ${
-            quiz.status === 'published'
+          className={`px-3 py-1 rounded-full text-xs font-medium ${quiz.status === 'published'
               ? 'bg-green-100 text-green-800'
               : 'bg-yellow-100 text-yellow-800'
-          }`}
+            }`}
         >
           {quiz.status === 'published' ? 'Publié' : 'Brouillon'}
         </span>

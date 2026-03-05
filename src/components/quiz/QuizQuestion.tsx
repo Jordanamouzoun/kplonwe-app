@@ -49,30 +49,27 @@ export function QuizQuestion({
               aria-checked={isSelected}
               onClick={() => !disabled && onAnswerSelect(index)}
               disabled={disabled}
-              className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                isCorrect
+              className={`w-full text-left p-4 rounded-lg border-2 transition-all ${isCorrect
                   ? 'border-green-500 bg-green-50'
                   : isWrong
-                  ? 'border-red-500 bg-red-50'
-                  : isSelected
-                  ? 'border-primary-600 bg-primary-50'
-                  : 'border-gray-300 hover:border-primary-400'
-              } ${
-                disabled ? 'cursor-not-allowed opacity-75' : 'cursor-pointer'
-              } focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2`}
+                    ? 'border-red-500 bg-red-50'
+                    : isSelected
+                      ? 'border-primary-600 bg-primary-50'
+                      : 'border-gray-300 hover:border-primary-400'
+                } ${disabled ? 'cursor-not-allowed opacity-75' : 'cursor-pointer'
+                } focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2`}
               aria-label={`Option ${index + 1}: ${option}${isCorrect ? ' (Réponse correcte)' : ''}${isWrong ? ' (Réponse incorrecte)' : ''}`}
             >
               <div className="flex items-center gap-3">
                 <div
-                  className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                    isCorrect
+                  className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center ${isCorrect
                       ? 'border-green-500 bg-green-500'
                       : isWrong
-                      ? 'border-red-500 bg-red-500'
-                      : isSelected
-                      ? 'border-primary-600 bg-primary-600'
-                      : 'border-gray-400'
-                  }`}
+                        ? 'border-red-500 bg-red-500'
+                        : isSelected
+                          ? 'border-primary-600 bg-primary-600'
+                          : 'border-gray-400'
+                    }`}
                   aria-hidden="true"
                 >
                   {isSelected && (

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
-import { 
-  MapPin, Briefcase, Award, Star, BookOpen, 
+import {
+  MapPin, Briefcase, Award, Star, BookOpen,
   DollarSign, Clock, CheckCircle, FileText, MessageSquare
 } from 'lucide-react';
 
@@ -63,21 +63,21 @@ export function TeacherPublicProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      
+
       {/* Header avec photo de couverture */}
       <div className="bg-gradient-to-br from-primary-600 to-primary-800 h-32 sm:h-48 lg:h-64 relative">
         <div className="absolute inset-0 bg-black/10" />
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 sm:-mt-24 pb-12">
-        
+
         {/* Card principale */}
         <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden mb-6">
-          
+
           {/* En-tête profil */}
           <div className="p-6 sm:p-8">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-              
+
               {/* Avatar */}
               <div className="relative flex-shrink-0">
                 {teacher.avatar ? (
@@ -113,7 +113,7 @@ export function TeacherPublicProfilePage() {
                     </span>
                   )}
                 </div>
-                
+
                 {teacher.profile?.bio && (
                   <p className="text-xs sm:text-sm md:text-base text-gray-600 mb-3 sm:mb-4 max-w-2xl break-words">
                     {teacher.profile.bio}
@@ -159,10 +159,10 @@ export function TeacherPublicProfilePage() {
 
         {/* Grille responsive */}
         <div className="grid lg:grid-cols-3 gap-6">
-          
+
           {/* Colonne gauche */}
           <div className="lg:col-span-2 space-y-6">
-            
+
             {/* Matières */}
             {teacher.profile?.subjects && teacher.profile.subjects.length > 0 && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -237,7 +237,7 @@ export function TeacherPublicProfilePage() {
 
           {/* Colonne droite */}
           <div className="space-y-6">
-            
+
             {/* Tarifs */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h3 className="font-bold text-gray-900 mb-4">Tarifs</h3>

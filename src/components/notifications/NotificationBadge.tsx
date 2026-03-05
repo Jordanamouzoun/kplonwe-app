@@ -37,7 +37,7 @@ export function NotificationBadge() {
         aria-haspopup="true"
       >
         <Bell size={24} aria-hidden="true" />
-        
+
         {/* Badge nombre */}
         {unreadCount > 0 && (
           <span
@@ -81,9 +81,8 @@ export function NotificationBadge() {
               {recentNotifications.map((notification) => (
                 <li key={notification.id}>
                   <div
-                    className={`px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 ${
-                      !notification.isRead ? 'bg-blue-50' : ''
-                    }`}
+                    className={`px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 ${!notification.isRead ? 'bg-blue-50' : ''
+                      }`}
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex-1">

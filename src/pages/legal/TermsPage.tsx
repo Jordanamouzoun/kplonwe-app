@@ -5,10 +5,10 @@ export function TermsPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        
+
         {/* Header */}
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 mb-6"
         >
           <ArrowLeft size={20} />
@@ -16,7 +16,7 @@ export function TermsPage() {
         </Link>
 
         <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 md:p-12">
-          
+
           {/* Title */}
           <div className="flex items-center gap-3 mb-6">
             <FileText className="text-primary-600" size={32} />
@@ -31,11 +31,11 @@ export function TermsPage() {
 
           {/* Content */}
           <div className="prose prose-gray max-w-none space-y-6">
-            
+
             <section>
               <h2 className="text-xl font-bold text-gray-900 mb-3">1. Acceptation des conditions</h2>
               <p className="text-gray-700 leading-relaxed">
-                En utilisant la plateforme KPLONWE, vous acceptez d'être lié par les présentes conditions d'utilisation. 
+                En utilisant la plateforme KPLONWE, vous acceptez d'être lié par les présentes conditions d'utilisation.
                 Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser nos services.
               </p>
             </section>
@@ -43,7 +43,7 @@ export function TermsPage() {
             <section>
               <h2 className="text-xl font-bold text-gray-900 mb-3">2. Description du service</h2>
               <p className="text-gray-700 leading-relaxed">
-                KPLONWE est une plateforme éducative qui met en relation des enseignants, des parents et des élèves. 
+                KPLONWE est une plateforme éducative qui met en relation des enseignants, des parents et des élèves.
                 Nous facilitons l'apprentissage en ligne et la gestion des cours particuliers.
               </p>
             </section>
@@ -73,7 +73,7 @@ export function TermsPage() {
             <section>
               <h2 className="text-xl font-bold text-gray-900 mb-3">5. Validation des enseignants</h2>
               <p className="text-gray-700 leading-relaxed">
-                Tous les profils d'enseignants sont soumis à validation par notre équipe administrative. 
+                Tous les profils d'enseignants sont soumis à validation par notre équipe administrative.
                 Nous nous réservons le droit de refuser ou suspendre tout compte qui ne répond pas à nos critères de qualité.
               </p>
             </section>
@@ -81,7 +81,7 @@ export function TermsPage() {
             <section>
               <h2 className="text-xl font-bold text-gray-900 mb-3">6. Paiements et remboursements</h2>
               <p className="text-gray-700 leading-relaxed">
-                Les transactions financières sont traitées de manière sécurisée via notre système de portefeuille. 
+                Les transactions financières sont traitées de manière sécurisée via notre système de portefeuille.
                 Les conditions de remboursement sont détaillées dans notre politique de remboursement.
               </p>
             </section>
@@ -89,7 +89,7 @@ export function TermsPage() {
             <section>
               <h2 className="text-xl font-bold text-gray-900 mb-3">7. Propriété intellectuelle</h2>
               <p className="text-gray-700 leading-relaxed">
-                Tout le contenu présent sur KPLONWE (logo, design, textes, etc.) est protégé par les droits d'auteur 
+                Tout le contenu présent sur KPLONWE (logo, design, textes, etc.) est protégé par les droits d'auteur
                 et appartient à KPLONWE ou à ses partenaires.
               </p>
             </section>
@@ -97,7 +97,7 @@ export function TermsPage() {
             <section>
               <h2 className="text-xl font-bold text-gray-900 mb-3">8. Limitation de responsabilité</h2>
               <p className="text-gray-700 leading-relaxed">
-                KPLONWE agit comme intermédiaire entre enseignants et élèves. Nous ne sommes pas responsables 
+                KPLONWE agit comme intermédiaire entre enseignants et élèves. Nous ne sommes pas responsables
                 de la qualité des cours dispensés ou des interactions entre utilisateurs.
               </p>
             </section>
@@ -105,7 +105,7 @@ export function TermsPage() {
             <section>
               <h2 className="text-xl font-bold text-gray-900 mb-3">9. Modification des conditions</h2>
               <p className="text-gray-700 leading-relaxed">
-                Nous nous réservons le droit de modifier ces conditions à tout moment. 
+                Nous nous réservons le droit de modifier ces conditions à tout moment.
                 Les utilisateurs seront informés des changements significatifs.
               </p>
             </section>
@@ -113,7 +113,7 @@ export function TermsPage() {
             <section>
               <h2 className="text-xl font-bold text-gray-900 mb-3">10. Contact</h2>
               <p className="text-gray-700 leading-relaxed">
-                Pour toute question concernant ces conditions, vous pouvez nous contacter à : 
+                Pour toute question concernant ces conditions, vous pouvez nous contacter à :
                 <a href="mailto:support@kplonwe.com" className="text-primary-600 hover:underline ml-1">
                   support@kplonwe.com
                 </a>

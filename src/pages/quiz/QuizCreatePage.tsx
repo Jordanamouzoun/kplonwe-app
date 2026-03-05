@@ -10,7 +10,7 @@ import type { Quiz, QuizQuestion } from '@/types';
 export function QuizCreatePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  
+
   const [quiz, setQuiz] = useState({
     title: '',
     description: '',

@@ -21,9 +21,8 @@ export function SchoolDashboard() {
       <section className="mb-8">
         <h2 className="text-xl sm:text-2xl font-bold mb-4">Statut de votre abonnement</h2>
         <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
-          <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${
-            hasSubscription ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'
-          }`}>
+          <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${hasSubscription ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'
+            }`}>
             {hasSubscription ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
             {hasSubscription ? 'Abonnement actif' : "Pas d'abonnement actif"}
           </span>
@@ -97,9 +96,8 @@ export function SchoolDashboard() {
             </ul>
           </div>
 
-          <div className={`p-4 sm:p-6 rounded-lg shadow-md border-l-4 ${
-            hasSubscription ? 'bg-white border-green-500' : 'bg-gray-50 border-gray-300'
-          }`}>
+          <div className={`p-4 sm:p-6 rounded-lg shadow-md border-l-4 ${hasSubscription ? 'bg-white border-green-500' : 'bg-gray-50 border-gray-300'
+            }`}>
             <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
               {hasSubscription
                 ? <CheckCircle className="text-green-600" size={22} />

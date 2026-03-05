@@ -94,7 +94,7 @@ export function QuizResultsPage() {
               questionNumber={index + 1}
               totalQuestions={quiz.questions.length}
               selectedAnswer={attempt.answers[question.id] ?? null}
-              onAnswerSelect={() => {}}
+              onAnswerSelect={() => { }}
               showCorrectAnswer
               disabled
             />

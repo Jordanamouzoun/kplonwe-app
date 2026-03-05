@@ -12,7 +12,7 @@ export interface User {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  
+
   // Profils spécifiques par rôle
   teacherProfile?: {
     id: string;
@@ -24,15 +24,15 @@ export interface User {
     validationStatus?: string;
     isPremium?: boolean;
   };
-  
+
   parentProfile?: {
     id: string;
   };
-  
+
   studentProfile?: {
     id: string;
   };
-  
+
   schoolProfile?: {
     id: string;
     schoolName?: string;

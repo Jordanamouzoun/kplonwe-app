@@ -147,10 +147,10 @@ export function MessagesListPage() {
                       {conversation.otherUser.role === 'TEACHER'
                         ? 'Professeur'
                         : conversation.otherUser.role === 'PARENT'
-                        ? 'Parent'
-                        : conversation.otherUser.role === 'STUDENT'
-                        ? 'Élève'
-                        : 'École'}
+                          ? 'Parent'
+                          : conversation.otherUser.role === 'STUDENT'
+                            ? 'Élève'
+                            : 'École'}
                     </p>
 
                     {conversation.lastMessage && (

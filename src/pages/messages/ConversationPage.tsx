@@ -28,13 +28,13 @@ export function ConversationPage() {
   const { conversationId } = useParams<{ conversationId: string }>();
   const { user } = useAuth();
   const { addNotification } = useNotifications();
-  
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [otherUser, setOtherUser] = useState<Participant | null>(null);
   const [newMessage, setNewMessage] = useState('');
   const [sending, setSending] = useState(false);
   const [loading, setLoading] = useState(true);
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messageInputRef = useRef<HTMLTextAreaElement>(null);
   const [liveRegionMessage, setLiveRegionMessage] = useState('');
@@ -44,12 +44,12 @@ export function ConversationPage() {
     if (conversationId) {
       loadMessages();
       markAsRead();
-      
+
       // Rafraîchir toutes les 5 secondes
       const interval = setInterval(() => {
         loadMessages(true);
       }, 5000);
-      
+
       return () => clearInterval(interval);
     }
   }, [conversationId]);
@@ -62,11 +62,11 @@ export function ConversationPage() {
   async function loadMessages(silent = false) {
     try {
       if (!silent) setLoading(true);
-      
+
       const response = await api.get(`/messages/conversations/${conversationId}`);
       if (response.data.success) {
         const newMessages = response.data.messages;
-        
+
         // Détecter nouveaux messages pour annonce vocale
         if (silent && messages.length > 0 && newMessages.length > messages.length) {
           const lastMessage = newMessages[newMessages.length - 1];
@@ -77,10 +77,10 @@ export function ConversationPage() {
             setTimeout(() => setLiveRegionMessage(''), 100);
           }
         }
-        
+
         setMessages(newMessages);
       }
-      
+
       // Récupérer infos conversation
       const convResponse = await api.get('/messages/conversations');
       if (convResponse.data.success) {
@@ -108,21 +108,21 @@ export function ConversationPage() {
 
   async function handleSendMessage(e: React.FormEvent) {
     e.preventDefault();
-    
+
     if (!newMessage.trim() || sending) return;
-    
+
     try {
       setSending(true);
       const response = await api.post(`/messages/conversations/${conversationId}/messages`, {
         content: newMessage.trim(),
       });
-      
+
       if (response.data.success) {
         setMessages([...messages, response.data.message]);
         setNewMessage('');
         setLiveRegionMessage('Message envoyé');
         setTimeout(() => setLiveRegionMessage(''), 100);
-        
+
         // Focus sur input après envoi
         setTimeout(() => {
           messageInputRef.current?.focus();
@@ -166,7 +166,7 @@ export function ConversationPage() {
           >
             <ArrowLeft size={24} />
           </Link>
-          
+
           {otherUser && (
             <div>
               <h1 className="text-xl font-bold text-gray-900">
@@ -176,10 +176,10 @@ export function ConversationPage() {
                 {otherUser.role === 'TEACHER'
                   ? 'Professeur'
                   : otherUser.role === 'PARENT'
-                  ? 'Parent'
-                  : otherUser.role === 'STUDENT'
-                  ? 'Élève'
-                  : 'École'}
+                    ? 'Parent'
+                    : otherUser.role === 'STUDENT'
+                      ? 'Élève'
+                      : 'École'}
               </p>
             </div>
           )}
@@ -199,18 +199,17 @@ export function ConversationPage() {
               {messages.map((message) => {
                 const isOwn = message.senderId === user?.id;
                 const sender = isOwn ? 'Vous' : `${otherUser?.firstName}`;
-                
+
                 return (
                   <div
                     key={message.id}
                     className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
                   >
                     <article
-                      className={`max-w-[70%] px-4 py-3 rounded-lg ${
-                        isOwn
+                      className={`max-w-[70%] px-4 py-3 rounded-lg ${isOwn
                           ? 'bg-primary-600 text-white'
                           : 'bg-white text-gray-900 border border-gray-200'
-                      }`}
+                        }`}
                       /* ✅ ACCESSIBILITÉ: aria-label explicite */
                       aria-label={`Message de ${sender} envoyé ${formatDistanceToNow(new Date(message.createdAt), { addSuffix: true, locale: fr })}`}
                     >

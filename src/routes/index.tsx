@@ -5,11 +5,11 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 
 // Public
-import { LandingPage }  from '@/pages/public/LandingPage';
+import { LandingPage } from '@/pages/public/LandingPage';
 import { NotFoundPage } from '@/pages/public/NotFoundPage';
 
 // Auth
-import { LoginPage }    from '@/pages/auth/LoginPage';
+import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
 
 // Legal
@@ -20,30 +20,30 @@ import { PrivacyPage } from '@/pages/legal/PrivacyPage';
 import { DashboardRouter } from '@/pages/dashboard/DashboardRouter';
 
 // Quiz, Wallet, Messages, Settings
-import { QuizTakePage }     from '@/pages/quiz/QuizTakePage';
-import { QuizResultsPage }  from '@/pages/quiz/QuizResultsPage';
-import { QuizCreatePage }   from '@/pages/quiz/QuizCreatePage';
-import { WalletPage }       from '@/pages/wallet/WalletPage';
+import { QuizTakePage } from '@/pages/quiz/QuizTakePage';
+import { QuizResultsPage } from '@/pages/quiz/QuizResultsPage';
+import { QuizCreatePage } from '@/pages/quiz/QuizCreatePage';
+import { WalletPage } from '@/pages/wallet/WalletPage';
 import { AccessibilitySettingsPage } from '@/pages/settings/AccessibilitySettingsPage';
-import { MessagesListPage }  from '@/pages/messages/MessagesListPage';
-import { ConversationPage }  from '@/pages/messages/ConversationPage';
+import { MessagesListPage } from '@/pages/messages/MessagesListPage';
+import { ConversationPage } from '@/pages/messages/ConversationPage';
 
 // Orientation
 import { OrientationPage } from '@/pages/orientation/OrientationPage';
 
 // Teacher
-import { TeacherProfilePage }     from '@/pages/teacher/TeacherProfilePage';
+import { TeacherProfilePage } from '@/pages/teacher/TeacherProfilePage';
 import { TeacherProfileEditPage } from '@/pages/teacher/TeacherProfileEditPage';
-import { TeacherDocumentsPage }   from '@/pages/teacher/TeacherDocumentsPage';
+import { TeacherDocumentsPage } from '@/pages/teacher/TeacherDocumentsPage';
 import { TeacherAvatarUploadPage } from '@/pages/teacher/TeacherAvatarUploadPage';
-import { TeacherMyProfilePage }   from '@/pages/teacher/TeacherMyProfilePage';
-import { TeachersSearchPage }     from '@/pages/teachers/TeachersSearchPage';
+import { TeacherMyProfilePage } from '@/pages/teacher/TeacherMyProfilePage';
+import { TeachersSearchPage } from '@/pages/teachers/TeachersSearchPage';
 
 // ── ADMIN ──────────────────────────────────────────────────────────────────
-import { AdminDashboardPage }    from '@/pages/admin/AdminDashboardPage';
-import { AdminTeachersPage }     from '@/pages/admin/AdminTeachersPage';
-import { AdminParentsPage }      from '@/pages/admin/AdminParentsPage';
-import { AdminSchoolsPage }      from '@/pages/admin/AdminSchoolsPage';
+import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage';
+import { AdminTeachersPage } from '@/pages/admin/AdminTeachersPage';
+import { AdminParentsPage } from '@/pages/admin/AdminParentsPage';
+import { AdminSchoolsPage } from '@/pages/admin/AdminSchoolsPage';
 import { AdminManageAdminsPage } from '@/pages/admin/AdminManageAdminsPage';
 
 // ── Composants utilitaires ─────────────────────────────────────────────────
@@ -92,9 +92,9 @@ export function AppRoutes() {
       <Route path="/" element={
         <MainLayout>{user ? <Navigate to="/dashboard" replace /> : <LandingPage />}</MainLayout>
       } />
-      <Route path="/login"    element={user ? <Navigate to="/dashboard" replace /> : <MainLayout><LoginPage /></MainLayout>} />
+      <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <MainLayout><LoginPage /></MainLayout>} />
       <Route path="/register" element={user ? <Navigate to="/dashboard" replace /> : <MainLayout><RegisterPage /></MainLayout>} />
-      
+
       {/* ── Legal ── */}
       <Route path="/terms" element={<TermsPage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
@@ -107,15 +107,15 @@ export function AppRoutes() {
       } />
 
       {/* ── Quiz ── */}
-      <Route path="/quiz/:quizId/take"    element={<ProtectedRoute><MainLayout><QuizTakePage /></MainLayout></ProtectedRoute>} />
+      <Route path="/quiz/:quizId/take" element={<ProtectedRoute><MainLayout><QuizTakePage /></MainLayout></ProtectedRoute>} />
       <Route path="/quiz/:quizId/results" element={<ProtectedRoute><MainLayout><QuizResultsPage /></MainLayout></ProtectedRoute>} />
-      <Route path="/quiz/create"          element={<ProtectedRoute><MainLayout><QuizCreatePage /></MainLayout></ProtectedRoute>} />
+      <Route path="/quiz/create" element={<ProtectedRoute><MainLayout><QuizCreatePage /></MainLayout></ProtectedRoute>} />
 
       {/* ── Wallet ── */}
       <Route path="/wallet" element={<ProtectedRoute><WalletProtectedRoute /></ProtectedRoute>} />
 
       {/* ── Messages ── */}
-      <Route path="/messages"               element={<ProtectedRoute><MainLayout><MessagesListPage /></MainLayout></ProtectedRoute>} />
+      <Route path="/messages" element={<ProtectedRoute><MainLayout><MessagesListPage /></MainLayout></ProtectedRoute>} />
       <Route path="/messages/:conversationId" element={<ProtectedRoute><ConversationPage /></ProtectedRoute>} />
 
       {/* ── Profil public professeur ── */}
@@ -129,19 +129,19 @@ export function AppRoutes() {
       } />
 
       {/* ── Pages privées professeur ── */}
-      <Route path="/teacher/profile/edit"   element={<ProtectedRoute><MainLayout><TeacherProfileEditPage /></MainLayout></ProtectedRoute>} />
+      <Route path="/teacher/profile/edit" element={<ProtectedRoute><MainLayout><TeacherProfileEditPage /></MainLayout></ProtectedRoute>} />
       <Route path="/teacher/profile/avatar" element={<ProtectedRoute><MainLayout><TeacherAvatarUploadPage /></MainLayout></ProtectedRoute>} />
-      <Route path="/teacher/documents"      element={<ProtectedRoute><MainLayout><TeacherDocumentsPage /></MainLayout></ProtectedRoute>} />
+      <Route path="/teacher/documents" element={<ProtectedRoute><MainLayout><TeacherDocumentsPage /></MainLayout></ProtectedRoute>} />
 
       {/* ── Settings ── */}
       <Route path="/settings/accessibility" element={<MainLayout><AccessibilitySettingsPage /></MainLayout>} />
 
       {/* ── ADMIN ── */}
-      <Route path="/admin"              element={<Navigate to="/admin/dashboard" replace />} />
-      <Route path="/admin/dashboard"    element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
-      <Route path="/admin/teachers"     element={<AdminRoute><AdminTeachersPage /></AdminRoute>} />
-      <Route path="/admin/parents"      element={<AdminRoute><AdminParentsPage /></AdminRoute>} />
-      <Route path="/admin/schools"      element={<AdminRoute><AdminSchoolsPage /></AdminRoute>} />
+      <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+      <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
+      <Route path="/admin/teachers" element={<AdminRoute><AdminTeachersPage /></AdminRoute>} />
+      <Route path="/admin/parents" element={<AdminRoute><AdminParentsPage /></AdminRoute>} />
+      <Route path="/admin/schools" element={<AdminRoute><AdminSchoolsPage /></AdminRoute>} />
       <Route path="/admin/manage-admins" element={<AdminRoute><AdminManageAdminsPage /></AdminRoute>} />
 
       {/* ── Orientation ── */}

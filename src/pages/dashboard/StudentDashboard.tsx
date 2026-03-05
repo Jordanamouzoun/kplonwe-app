@@ -17,9 +17,9 @@ interface Quiz {
 
 export function StudentDashboard() {
   const { user } = useAuth();
-  const [quizzes, setQuizzes]   = useState<Quiz[]>([]);
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState('');
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => { loadQuizzes(); }, []);
 

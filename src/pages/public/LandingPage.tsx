@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
-import { 
-  BookOpen, Users, TrendingUp, Shield, Zap, Globe, 
-  Check, ArrowRight, Star, MessageSquare, CreditCard, Award 
+import {
+  BookOpen, Users, TrendingUp, Shield, Zap, Globe,
+  Check, ArrowRight, Star, MessageSquare, CreditCard, Award
 } from 'lucide-react';
 
 export function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      
+
       {/* ═══ HERO SECTION ═══════════════════════════════════════════ */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 text-white">
         {/* Decorative background */}
@@ -18,7 +18,7 @@ export function LandingPage() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-28">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            
+
             {/* Left: Text Content */}
             <div className="text-center lg:text-left space-y-6 lg:space-y-8">
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/20">
@@ -32,19 +32,19 @@ export function LandingPage() {
               </h1>
 
               <p className="text-base sm:text-lg lg:text-xl text-gray-100 max-w-2xl mx-auto lg:mx-0">
-                Connectez enseignants, parents et élèves sur une plateforme moderne. 
+                Connectez enseignants, parents et élèves sur une plateforme moderne.
                 Quiz interactifs, messagerie, paiements sécurisés et orientation professionnelle.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Link 
+                <Link
                   to="/register"
                   className="inline-flex items-center justify-center gap-2 bg-white text-primary-700 hover:bg-gray-50 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg shadow-xl transition-all transform hover:scale-105"
                 >
                   Commencer gratuitement
                   <ArrowRight size={20} />
                 </Link>
-                <Link 
+                <Link
                   to="/login"
                   className="inline-flex items-center justify-center gap-2 bg-transparent border-2 border-white hover:bg-white/10 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg transition-all"
                 >
@@ -100,7 +100,7 @@ export function LandingPage() {
         {/* Wave separator */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-12 sm:h-16 lg:h-20">
-            <path d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0V0Z" fill="white"/>
+            <path d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0V0Z" fill="white" />
           </svg>
         </div>
       </section>
@@ -108,7 +108,7 @@ export function LandingPage() {
       {/* ═══ FEATURES ═══════════════════════════════════════════════ */}
       <section className="py-12 sm:py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           <div className="text-center mb-12 lg:mb-16">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               Tout ce dont vous avez besoin
@@ -157,7 +157,7 @@ export function LandingPage() {
                 color: 'bg-indigo-100 text-indigo-600',
               },
             ].map((feature, idx) => (
-              <div 
+              <div
                 key={idx}
                 className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all border border-gray-100 hover:border-primary-200 group"
               >
@@ -179,7 +179,7 @@ export function LandingPage() {
       {/* ═══ PRICING ════════════════════════════════════════════════ */}
       <section className="py-12 sm:py-16 lg:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           <div className="text-center mb-12 lg:mb-16">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               Tarifs transparents
@@ -212,7 +212,7 @@ export function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Link 
+              <Link
                 to="/register"
                 className="block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold py-3 rounded-lg transition"
               >
@@ -246,7 +246,7 @@ export function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Link 
+              <Link
                 to="/register"
                 className="block w-full text-center bg-white hover:bg-gray-50 text-primary-700 font-bold py-3 rounded-lg transition shadow-lg"
               >
@@ -294,7 +294,7 @@ export function LandingPage() {
             Rejoignez des centaines d'enseignants, parents et élèves qui utilisent déjà KPLONWE.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
+            <Link
               to="/register"
               className="inline-flex items-center justify-center gap-2 bg-white text-primary-700 hover:bg-gray-50 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg shadow-xl transition-all transform hover:scale-105"
             >
@@ -311,9 +311,9 @@ export function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-3 mb-4">
-                <img 
-                  src="/logo-kplonwe.png" 
-                  alt="KPLONWE" 
+                <img
+                  src="/logo-kplonwe.png"
+                  alt="KPLONWE"
                   className="h-14 sm:h-16 w-auto object-contain"
                 />
               </div>

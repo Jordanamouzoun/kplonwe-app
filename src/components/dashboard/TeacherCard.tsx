@@ -26,7 +26,7 @@ export function TeacherCard({ teacher, showContact = false }: TeacherCardProps) 
           </div>
         )}
       </div>
-      
+
       <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
         <div className="flex items-center gap-1">
           <Star size={16} className="text-yellow-500" aria-hidden="true" />

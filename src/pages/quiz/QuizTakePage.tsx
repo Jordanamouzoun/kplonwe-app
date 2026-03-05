@@ -25,7 +25,7 @@ interface Quiz {
 export function QuizTakePage() {
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
-  
+
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -49,14 +49,14 @@ export function QuizTakePage() {
 
   const handleSubmit = async () => {
     if (!confirm('Êtes-vous sûr de vouloir soumettre vos réponses ?')) return;
-    
+
     setSubmitting(true);
     try {
       const formattedAnswers = Object.entries(answers).map(([questionId, answer]) => ({
         questionId,
         answer,
       }));
-      
+
       await api.post(`/quiz/${quizId}/submit`, { answers: formattedAnswers });
       navigate(`/quiz/${quizId}/results`);
     } catch (err: any) {
@@ -82,11 +82,11 @@ export function QuizTakePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      
+
       {/* Header sticky */}
       <div className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          
+
           {/* Top row */}
           <div className="flex items-center justify-between mb-3">
             <button
@@ -96,7 +96,7 @@ export function QuizTakePage() {
               <ArrowLeft size={18} />
               <span className="hidden sm:inline">Quitter</span>
             </button>
-            
+
             {quiz.duration && (
               <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-50 rounded-lg">
                 <Clock size={16} className="text-primary-600" />
@@ -113,7 +113,7 @@ export function QuizTakePage() {
 
           {/* Quiz title */}
           <h1 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">{quiz.title}</h1>
-          
+
           {/* Progress */}
           <QuizProgress
             current={currentQuestionIndex + 1}
@@ -125,10 +125,10 @@ export function QuizTakePage() {
 
       {/* Main content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        
+
         {/* Question card */}
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-5 sm:p-8 mb-6">
-          
+
           {/* Question header */}
           <div className="flex items-start justify-between gap-4 mb-6">
             <div className="flex-1">

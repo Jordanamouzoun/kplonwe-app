@@ -126,17 +126,17 @@ export function TeacherProfilePage() {
   }
 
   const statusConfig: Record<string, { label: string; icon: any; color: string; bg: string }> = {
-    PENDING:  { label: 'Non vérifié', icon: Clock,       color: 'text-yellow-600', bg: 'bg-yellow-100' },
-    VERIFIED: { label: 'Vérifié',     icon: CheckCircle, color: 'text-green-600',  bg: 'bg-green-100'  },
-    REJECTED: { label: 'Refusé',      icon: XCircle,     color: 'text-red-600',    bg: 'bg-red-100'    },
+    PENDING: { label: 'Non vérifié', icon: Clock, color: 'text-yellow-600', bg: 'bg-yellow-100' },
+    VERIFIED: { label: 'Vérifié', icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-100' },
+    REJECTED: { label: 'Refusé', icon: XCircle, color: 'text-red-600', bg: 'bg-red-100' },
   };
   const status = statusConfig[profile.validationStatus] ?? statusConfig.PENDING;
   const StatusIcon = status.icon;
 
   const avatarUrl = profile.user.avatar
     ? (profile.user.avatar.startsWith('http')
-        ? profile.user.avatar
-        : `${BACKEND_URL}${profile.user.avatar}`)
+      ? profile.user.avatar
+      : `${BACKEND_URL}${profile.user.avatar}`)
     : null;
 
   return (
@@ -215,13 +215,13 @@ export function TeacherProfilePage() {
             {/* Boutons d'action */}
             {isVerified && (
               <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                <Button 
+                <Button
                   onClick={() => alert('Fonctionnalité de messagerie à venir')}
                   className="flex-1 sm:flex-none"
                 >
                   Contacter
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   onClick={() => alert('Fonctionnalité d\'ajout de répétiteur à venir')}
                   className="flex-1 sm:flex-none"
@@ -326,9 +326,9 @@ export function TeacherProfilePage() {
                 ID_CARD: "Pièce d'identité", OTHER: 'Document',
               };
               const docStatusCfg: Record<string, { label: string; icon: any; color: string; bg: string }> = {
-                PENDING:  { label: 'En attente', icon: Clock,       color: 'text-yellow-600', bg: 'bg-yellow-100' },
-                VERIFIED: { label: 'Vérifié',    icon: CheckCircle, color: 'text-green-600',  bg: 'bg-green-100'  },
-                REJECTED: { label: 'Refusé',     icon: XCircle,     color: 'text-red-600',    bg: 'bg-red-100'    },
+                PENDING: { label: 'En attente', icon: Clock, color: 'text-yellow-600', bg: 'bg-yellow-100' },
+                VERIFIED: { label: 'Vérifié', icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-100' },
+                REJECTED: { label: 'Refusé', icon: XCircle, color: 'text-red-600', bg: 'bg-red-100' },
               };
               const ds = docStatusCfg[doc.status] ?? docStatusCfg.PENDING;
               const DocIcon = ds.icon;

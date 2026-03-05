@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
-import { 
-  Wallet, TrendingUp, TrendingDown, Plus, ArrowUpRight, 
-  ArrowDownLeft, CreditCard, Smartphone, AlertCircle 
+import {
+  Wallet, TrendingUp, TrendingDown, Plus, ArrowUpRight,
+  ArrowDownLeft, CreditCard, Smartphone, AlertCircle
 } from 'lucide-react';
 
 interface Transaction {
@@ -66,7 +66,7 @@ export function WalletPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-6 sm:py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Header */}
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Mon portefeuille</h1>
@@ -210,7 +210,7 @@ export function WalletPage() {
 
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-gray-700 mb-3">Moyen de paiement</p>
-                  
+
                   <button className="w-full flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition">
                     <Smartphone className="text-orange-600" size={24} />
                     <div className="flex-1 text-left">

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
-import { 
+import {
   CheckCircle, XCircle, Clock, Eye, Search,
   AlertCircle, User
 } from 'lucide-react';
@@ -36,10 +36,10 @@ export function AdminTeachersPage() {
     try {
       const res = await api.get('/admin/teachers');
       console.log('Réponse API:', res.data); // Debug
-      
+
       // S'assurer que c'est toujours un tableau
       let teachersData = [];
-      
+
       if (Array.isArray(res.data)) {
         teachersData = res.data;
       } else if (res.data?.teachers && Array.isArray(res.data.teachers)) {
@@ -47,7 +47,7 @@ export function AdminTeachersPage() {
       } else if (res.data?.data && Array.isArray(res.data.data)) {
         teachersData = res.data.data;
       }
-      
+
       setTeachers(teachersData);
     } catch (err) {
       console.error('Erreur:', err);
@@ -59,17 +59,17 @@ export function AdminTeachersPage() {
 
   const handleValidate = async (teacherId: string, status: 'VERIFIED' | 'REJECTED') => {
     if (!confirm(`Confirmer ${status === 'VERIFIED' ? 'la validation' : 'le rejet'} ?`)) return;
-    
+
     try {
       // Appeler le bon endpoint selon le status
-      const endpoint = status === 'VERIFIED' 
+      const endpoint = status === 'VERIFIED'
         ? `/admin/teachers/${teacherId}/validate`
         : `/admin/teachers/${teacherId}/reject`;
-      
-      await api.post(endpoint, { 
+
+      await api.post(endpoint, {
         comment: status === 'REJECTED' ? 'Profil incomplet' : 'Profil validé'
       });
-      
+
       loadTeachers();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Erreur lors de la validation');
@@ -78,7 +78,7 @@ export function AdminTeachersPage() {
 
   const filteredTeachers = teachers.filter(t => {
     const matchesFilter = filter === 'ALL' || t.profile?.validationStatus === filter;
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch = searchQuery === '' ||
       `${t.user?.firstName} ${t.user?.lastName} ${t.user?.email}`.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
@@ -109,7 +109,7 @@ export function AdminTeachersPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-      
+
       {/* Header */}
       <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Validation des enseignants</h1>
@@ -118,18 +118,17 @@ export function AdminTeachersPage() {
 
       {/* Filters */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
-        
+
         {/* Status tabs */}
         <div className="flex gap-2 mb-4 overflow-x-auto pb-2 -mx-2 px-2 sm:mx-0 sm:px-0">
           {(['ALL', 'PENDING', 'VERIFIED', 'REJECTED'] as const).map((status) => (
             <button
               key={status}
               onClick={() => setFilter(status)}
-              className={`flex-shrink-0 px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
-                filter === status
+              className={`flex-shrink-0 px-4 py-2 rounded-lg font-semibold text-sm transition-all ${filter === status
                   ? 'bg-primary-600 text-white shadow-md'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+                }`}
             >
               {status === 'ALL' ? 'Tous' : statusConfig[status].label}
               <span className="ml-2 opacity-75">({counts[status]})</span>
@@ -152,7 +151,7 @@ export function AdminTeachersPage() {
 
       {/* Teachers List */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        
+
         {loading ? (
           <div className="p-8 text-center">
             <p className="text-gray-500">Chargement...</p>

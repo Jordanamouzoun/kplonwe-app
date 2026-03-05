@@ -208,13 +208,12 @@ export function TeacherDocumentsPage() {
           {/* Message feedback */}
           {uploadMessage && (
             <div
-              className={`p-4 rounded-lg ${
-                uploadMessage.startsWith('Succès')
+              className={`p-4 rounded-lg ${uploadMessage.startsWith('Succès')
                   ? 'bg-green-50 text-green-800'
                   : uploadMessage.startsWith('Erreur')
-                  ? 'bg-red-50 text-red-800'
-                  : 'bg-blue-50 text-blue-800'
-              }`}
+                    ? 'bg-red-50 text-red-800'
+                    : 'bg-blue-50 text-blue-800'
+                }`}
               role="status"
               aria-live="polite"
             >
