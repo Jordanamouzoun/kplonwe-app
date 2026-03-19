@@ -14,16 +14,25 @@ class AuthService {
     return data.data;
   }
 
-  async register(userData: RegisterData): Promise<AuthResponse> {
-    const { data } = await apiClient.post<ApiResponse<AuthResponse>>('/auth/register', userData);
-    
-    if (data.success) {
-      localStorage.setItem('accessToken', data.data.accessToken);
-      localStorage.setItem('refreshToken', data.data.refreshToken);
-      localStorage.setItem('user', JSON.stringify(data.data.user));
-    }
-    
+  async register(userData: RegisterData): Promise<{ userId: string; email: string }> {
+    const { data } = await apiClient.post<ApiResponse<{ userId: string; email: string }>>('/auth/register', userData);
     return data.data;
+  }
+
+  async verifyEmail(email: string, code: string): Promise<void> {
+    await apiClient.post('/auth/verify-email', { email, code });
+  }
+
+  async resendVerificationCode(email: string): Promise<void> {
+    await apiClient.post('/auth/resend-verification', { email });
+  }
+
+  async forgotPassword(email: string): Promise<void> {
+    await apiClient.post('/auth/forgot-password', { email });
+  }
+
+  async resetPassword(data: any): Promise<void> {
+    await apiClient.post('/auth/reset-password', data);
   }
 
   async getProfile(): Promise<User> {

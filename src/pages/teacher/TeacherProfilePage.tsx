@@ -39,7 +39,7 @@ export function TeacherProfilePage() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
-  const isOwnProfile = user?.teacherProfile?.id === teacherId;
+  const isOwnProfile = user?.id === teacherId || user?.teacherProfile?.id === teacherId;
 
   useEffect(() => {
     if (!teacherId || teacherId === 'undefined') {
@@ -126,15 +126,16 @@ export function TeacherProfilePage() {
   }
 
   const statusConfig: Record<string, { label: string; icon: any; color: string; bg: string }> = {
-    PENDING: { label: 'Non vérifié', icon: Clock, color: 'text-yellow-600', bg: 'bg-yellow-100' },
-    VERIFIED: { label: 'Vérifié', icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-100' },
-    REJECTED: { label: 'Refusé', icon: XCircle, color: 'text-red-600', bg: 'bg-red-100' },
+    PENDING: { label: 'Certification en cours', icon: Clock, color: 'text-yellow-600', bg: 'bg-yellow-100' },
+    VERIFIED: { label: 'Profil Certifié', icon: CheckCircle, color: 'text-primary-600', bg: 'bg-primary-50' },
+    REJECTED: { label: 'Profil masqué', icon: XCircle, color: 'text-red-600', bg: 'bg-red-100' },
   };
   const status = statusConfig[profile.validationStatus] ?? statusConfig.PENDING;
+  const showStatusBadge = profile.validationStatus === 'VERIFIED' || isOwnProfile;
   const StatusIcon = status.icon;
 
   const avatarUrl = profile.user.avatar
-    ? (profile.user.avatar.startsWith('http')
+    ? (profile.user.avatar.startsWith('http') || profile.user.avatar.startsWith('data:')
       ? profile.user.avatar
       : `${BACKEND_URL}${profile.user.avatar}`)
     : null;
@@ -180,12 +181,14 @@ export function TeacherProfilePage() {
               {profile.user.firstName} {profile.user.lastName}
             </h1>
 
-            <div className="mb-3 flex justify-center sm:justify-start">
-              <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold ${status.bg} ${status.color}`}>
-                <StatusIcon size={14} className="sm:w-4 sm:h-4" />
-                {status.label}
-              </span>
-            </div>
+            {showStatusBadge && (
+              <div className="mb-3 flex justify-center sm:justify-start">
+                <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider ${status.bg} ${status.color} border border-current opacity-80`}>
+                  <StatusIcon size={14} className="sm:w-4 sm:h-4" />
+                  {status.label}
+                </span>
+              </div>
+            )}
 
             {/* Expérience */}
             {profile.experience && profile.experience > 0 ? (
@@ -213,7 +216,7 @@ export function TeacherProfilePage() {
             )}
 
             {/* Boutons d'action */}
-            {isVerified && (
+            {profile.validationStatus === 'VERIFIED' && (
               <div className="mt-6 flex flex-col sm:flex-row gap-3">
                 <Button
                   onClick={() => alert('Fonctionnalité de messagerie à venir')}
@@ -350,7 +353,7 @@ export function TeacherProfilePage() {
                     </div>
                   </div>
                   <a
-                    href={`${BACKEND_URL}${doc.filePath}`}
+                    href={doc.filePath.startsWith('http') ? doc.filePath : `${BACKEND_URL}${doc.filePath}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 text-primary-600 hover:text-primary-700 rounded-lg"

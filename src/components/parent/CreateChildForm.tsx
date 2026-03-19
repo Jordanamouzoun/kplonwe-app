@@ -1,4 +1,5 @@
 import { useState, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -14,6 +15,7 @@ interface CreateChildFormProps {
 }
 
 export function CreateChildForm({ isOpen, onClose, onSuccess }: CreateChildFormProps) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -92,11 +94,12 @@ export function CreateChildForm({ isOpen, onClose, onSuccess }: CreateChildFormP
       // Gérer le format de réponse avec success: true
       const childData = response.data.success ? response.data.child : response.data;
 
-      setSuccessMessage(`Le compte de ${formData.firstName} a été créé avec succès !`);
+      setSuccessMessage(`Le compte de ${formData.firstName} a été créé avec succès ! Redirection vers la vérification...`);
       
       setTimeout(() => {
         onSuccess(childData);
         handleClose();
+        navigate(`/verify-email?email=${encodeURIComponent(formData.email)}`);
       }, 1500);
 
     } catch (error: any) {

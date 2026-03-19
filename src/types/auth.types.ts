@@ -20,9 +20,17 @@ export interface User {
     subjects?: string[];
     experience?: number;
     pricePerMonth?: number;
+    pricePerHour?: number;
     levels?: string[];
+    certifications?: string[];
     validationStatus?: string;
     isPremium?: boolean;
+    rating?: number;
+    reviewCount?: number;
+    totalStudents?: number;
+    points?: number;
+    specialty?: string;
+    totalEarnings?: number;
   };
 
   parentProfile?: {

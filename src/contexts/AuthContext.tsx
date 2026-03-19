@@ -7,6 +7,10 @@ interface AuthContextType {
   loading: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (userData: RegisterData) => Promise<void>;
+  verifyEmail: (email: string, code: string) => Promise<void>;
+  resendCode: (email: string) => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
+  resetPassword: (data: any) => Promise<void>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   updateUserAvatar: (avatarPath: string) => void;   // ← mise à jour instantanée
@@ -93,8 +97,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function register(userData: RegisterData) {
-    const authResponse = await authService.register(userData);
-    setUser(normalizeUser(authResponse.user));
+    await authService.register(userData);
+    // On ne définit pas le user ici car il doit d'abord vérifier son email
+  }
+
+  async function verifyEmail(email: string, code: string) {
+    await authService.verifyEmail(email, code);
+  }
+
+  async function resendCode(email: string) {
+    await authService.resendVerificationCode(email);
+  }
+
+  async function forgotPassword(email: string) {
+    await authService.forgotPassword(email);
+  }
+
+  async function resetPassword(data: any) {
+    await authService.resetPassword(data);
   }
 
   async function logout() {
@@ -135,6 +155,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     login,
     register,
+    verifyEmail,
+    resendCode,
+    forgotPassword,
+    resetPassword,
     logout,
     refreshProfile,
     updateUserAvatar,

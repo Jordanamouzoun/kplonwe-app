@@ -1,363 +1,349 @@
+import { useEffect, useRef, useState, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  BookOpen, Users, TrendingUp, Shield, Zap, Globe,
-  Check, ArrowRight, Star, MessageSquare, CreditCard, Award
-} from 'lucide-react';
+import { ArrowRight, Star, Heart, GraduationCap, Users, ShieldCheck } from 'lucide-react';
+
+// --- Animated Component Wrapper ---
+function FadeInView({ 
+  children, 
+  delay = 0, 
+  direction = 'up',
+  className = "" 
+}: { 
+  children: ReactNode, 
+  delay?: number, 
+  direction?: 'up' | 'down' | 'left' | 'right' | 'none',
+  className?: string 
+}) {
+  const domRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        setVisible(true);
+        domRef.current && observer.unobserve(domRef.current);
+      }
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    
+    if (domRef.current) observer.observe(domRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const getTranslate = () => {
+    switch (direction) {
+      case 'up': return 'translate-y-12';
+      case 'down': return '-translate-y-12';
+      case 'left': return 'translate-x-12';
+      case 'right': return '-translate-x-12';
+      case 'none': return '';
+    }
+  };
+
+  return (
+    <div
+      ref={domRef}
+      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        isVisible ? 'opacity-100 translate-y-0 translate-x-0' : `opacity-0 ${getTranslate()}`
+      } ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
 
 export function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-[#FDFDFD] font-sans overflow-x-hidden selection:bg-primary-200 selection:text-primary-900">
 
-      {/* ═══ HERO SECTION ═══════════════════════════════════════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 text-white">
-        {/* Decorative background */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 -left-4 w-72 h-72 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 -right-4 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-28">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-
-            {/* Left: Text Content */}
-            <div className="text-center lg:text-left space-y-6 lg:space-y-8">
-              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/20">
-                <Zap size={16} className="text-yellow-300" />
-                <span>Plateforme éducative #1 au Bénin</span>
+      {/* ═══ EXPERT HERO SECTION ═══════════════════════════════════════════ */}
+      <section className="relative pt-8 pb-16 lg:pt-16 lg:pb-32 px-4 sm:px-6 lg:px-8 max-w-[90rem] mx-auto">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-start lg:pt-10">
+          
+          {/* Typography & CTA (Left) */}
+          <div className="lg:col-span-6 2xl:col-span-5 z-10 pt-4 lg:pt-0">
+            <div className="animate-[fade-in-up_0.5s_ease-out_forwards]">
+              <div className="inline-flex items-center gap-3 px-4 py-2 bg-primary-50 rounded-full text-primary-800 font-semibold mb-6 lg:mb-8 border border-primary-100/50 backdrop-blur-sm">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#fdb32a] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#fdb32a]"></span>
+                </span>
+                La nouvelle référence éducative
               </div>
+            </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight tracking-tight">
-                L'éducation
-                <span className="block text-yellow-300 mt-2">à portée de main</span>
+            <div className="animate-[fade-in-up_0.6s_ease-out_forwards]">
+              <h1 className="text-5xl sm:text-6xl lg:text-[4.5rem] font-extrabold text-gray-900 leading-[1.05] tracking-tight mb-8">
+                L'éducation qui révèle <span className="text-primary-600 block mt-2">votre potentiel.</span>
               </h1>
+            </div>
 
-              <p className="text-base sm:text-lg lg:text-xl text-gray-100 max-w-2xl mx-auto lg:mx-0">
-                Connectez enseignants, parents et élèves sur une plateforme moderne.
-                Quiz interactifs, messagerie, paiements sécurisés et orientation professionnelle.
+            <div className="animate-[fade-in-up_0.7s_ease-out_forwards]">
+              <p className="text-lg sm:text-2xl text-gray-500 mb-10 leading-relaxed font-light max-w-xl">
+                Trouvez des répétiteurs passionnés et bénéficiez d'un accompagnement sur-mesure pour atteindre l'excellence scolaire au Bénin.
               </p>
+            </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <div className="animate-[fade-in-up_0.8s_ease-out_forwards]">
+              <div className="flex flex-col sm:flex-row gap-5">
+                <Link
+                  to="/teachers"
+                  className="flex items-center justify-center gap-3 bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-[0_20px_40px_-15px_rgba(37,99,235,0.5)] hover:-translate-y-1"
+                >
+                  Trouver un répétiteur
+                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
                 <Link
                   to="/register"
-                  className="inline-flex items-center justify-center gap-2 bg-white text-primary-700 hover:bg-gray-50 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg shadow-xl transition-all transform hover:scale-105"
+                  className="flex items-center justify-center gap-3 bg-white text-gray-900 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 px-8 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-lg"
                 >
-                  Commencer gratuitement
-                  <ArrowRight size={20} />
-                </Link>
-                <Link
-                  to="/login"
-                  className="inline-flex items-center justify-center gap-2 bg-transparent border-2 border-white hover:bg-white/10 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg transition-all"
-                >
-                  Se connecter
+                  S'inscrire comme prof
                 </Link>
               </div>
-
-              {/* Trust indicators */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 pt-4 text-sm sm:text-base">
-                <div className="flex items-center gap-2">
-                  <Check size={18} className="text-green-300" />
-                  <span>100% gratuit</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check size={18} className="text-green-300" />
-                  <span>Sans engagement</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check size={18} className="text-green-300" />
-                  <span>Sécurisé</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Visual/Stats */}
-            <div className="hidden lg:block">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 space-y-2">
-                  <Users className="text-yellow-300" size={32} />
-                  <p className="text-3xl font-bold">1000+</p>
-                  <p className="text-sm text-gray-200">Utilisateurs actifs</p>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 space-y-2 mt-8">
-                  <BookOpen className="text-yellow-300" size={32} />
-                  <p className="text-3xl font-bold">500+</p>
-                  <p className="text-sm text-gray-200">Quiz disponibles</p>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 space-y-2 -mt-4">
-                  <Award className="text-yellow-300" size={32} />
-                  <p className="text-3xl font-bold">200+</p>
-                  <p className="text-sm text-gray-200">Enseignants vérifiés</p>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 space-y-2 mt-4">
-                  <TrendingUp className="text-yellow-300" size={32} />
-                  <p className="text-3xl font-bold">98%</p>
-                  <p className="text-sm text-gray-200">Satisfaction</p>
-                </div>
-              </div>
             </div>
           </div>
-        </div>
 
-        {/* Wave separator */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-12 sm:h-16 lg:h-20">
-            <path d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0V0Z" fill="white" />
-          </svg>
-        </div>
-      </section>
-
-      {/* ═══ FEATURES ═══════════════════════════════════════════════ */}
-      <section className="py-12 sm:py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Tout ce dont vous avez besoin
-            </h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
-              Une plateforme complète pour révolutionner l'apprentissage au Bénin
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {[
-              {
-                icon: BookOpen,
-                title: 'Quiz interactifs',
-                description: 'Créez et passez des quiz personnalisés avec correction automatique',
-                color: 'bg-blue-100 text-blue-600',
-              },
-              {
-                icon: MessageSquare,
-                title: 'Messagerie intégrée',
-                description: 'Échangez facilement avec enseignants, parents et élèves',
-                color: 'bg-green-100 text-green-600',
-              },
-              {
-                icon: CreditCard,
-                title: 'Paiements sécurisés',
-                description: 'MoMo Pay, Moov Money et cartes bancaires acceptés',
-                color: 'bg-purple-100 text-purple-600',
-              },
-              {
-                icon: Award,
-                title: 'Enseignants vérifiés',
-                description: 'Tous les professeurs sont validés par notre équipe',
-                color: 'bg-yellow-100 text-yellow-600',
-              },
-              {
-                icon: TrendingUp,
-                title: 'Orientation professionnelle',
-                description: 'Découvrez les métiers et formations qui vous correspondent',
-                color: 'bg-red-100 text-red-600',
-              },
-              {
-                icon: Shield,
-                title: 'Données sécurisées',
-                description: 'Vos informations sont protégées avec les meilleurs standards',
-                color: 'bg-indigo-100 text-indigo-600',
-              },
-            ].map((feature, idx) => (
-              <div
-                key={idx}
-                className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all border border-gray-100 hover:border-primary-200 group"
-              >
-                <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                  <feature.icon size={24} />
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                  {feature.description}
-                </p>
+          {/* Expert Aesthetic Image Collage (Right) */}
+          <div className="lg:col-span-6 2xl:col-span-7 relative h-[500px] lg:h-[700px] hidden md:block">
+            {/* Image 1: Top Right */}
+            <FadeInView delay={300} direction="left" className="absolute top-0 right-0 w-[60%] h-[55%] z-20">
+              <div className="w-full h-full rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform hover:scale-[1.02] transition-transform duration-700">
+                <img 
+                  src="https://img.freepik.com/photos-gratuite/femme-africaine-enseignant-aux-enfants-classe_23-2148892564.jpg?semt=ais_hybrid&w=740&q=80" 
+                  alt="Enseignante africaine avec ses élèves" 
+                  className="w-full h-full object-cover object-top"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary-900/30 to-transparent"></div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </FadeInView>
 
-      {/* ═══ PRICING ════════════════════════════════════════════════ */}
-      <section className="py-12 sm:py-16 lg:py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Tarifs transparents
-            </h2>
-            <p className="text-base sm:text-lg text-gray-600">
-              Choisissez la formule adaptée à vos besoins
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
-            {/* Gratuit */}
-            <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-md border-2 border-gray-200">
-              <div className="mb-6">
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Gratuit</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl sm:text-4xl font-bold text-gray-900">0</span>
-                  <span className="text-gray-600">FCFA/mois</span>
-                </div>
-              </div>
-              <ul className="space-y-3 mb-8">
-                {[
-                  'Accès aux quiz publics',
-                  'Messagerie basique',
-                  '7 quiz/mois (écoles)',
-                  'Support communautaire',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <Check size={20} className="text-green-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm sm:text-base text-gray-700">{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                to="/register"
-                className="block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold py-3 rounded-lg transition"
-              >
-                Commencer
-              </Link>
-            </div>
-
-            {/* Premium (Highlighted) */}
-            <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-6 sm:p-8 shadow-xl border-2 border-primary-500 transform lg:scale-105 relative">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-gray-900 px-4 py-1 rounded-full text-sm font-bold">
-                POPULAIRE
-              </div>
-              <div className="mb-6">
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">Premium</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl sm:text-4xl font-bold text-white">5000</span>
-                  <span className="text-gray-200">FCFA/mois</span>
-                </div>
-              </div>
-              <ul className="space-y-3 mb-8">
-                {[
-                  'Tout du plan Gratuit',
-                  'Quiz illimités',
-                  'Badge vérifié',
-                  'Support prioritaire',
-                  'Statistiques avancées',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <Check size={20} className="text-yellow-300 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm sm:text-base text-white">{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                to="/register"
-                className="block w-full text-center bg-white hover:bg-gray-50 text-primary-700 font-bold py-3 rounded-lg transition shadow-lg"
-              >
-                Essayer Premium
-              </Link>
-            </div>
-
-            {/* Enterprise */}
-            <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-md border-2 border-gray-200">
-              <div className="mb-6">
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Entreprise</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl sm:text-3xl font-bold text-gray-900">Sur devis</span>
-                </div>
-              </div>
-              <ul className="space-y-3 mb-8">
-                {[
-                  'Tout du plan Premium',
-                  'API personnalisée',
-                  'Multi-établissements',
-                  'Support dédié 24/7',
-                  'Formation sur site',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <Check size={20} className="text-green-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm sm:text-base text-gray-700">{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <button className="block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold py-3 rounded-lg transition">
-                Nous contacter
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ CTA FINAL ══════════════════════════════════════════════ */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">
-            Prêt à transformer l'éducation ?
-          </h2>
-          <p className="text-base sm:text-lg lg:text-xl text-gray-100 mb-6 sm:mb-8 max-w-2xl mx-auto">
-            Rejoignez des centaines d'enseignants, parents et élèves qui utilisent déjà KPLONWE.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/register"
-              className="inline-flex items-center justify-center gap-2 bg-white text-primary-700 hover:bg-gray-50 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg shadow-xl transition-all transform hover:scale-105"
-            >
-              Créer un compte gratuit
-              <ArrowRight size={20} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ FOOTER ═════════════════════════════════════════════════ */}
-      <footer className="bg-gray-900 text-gray-300 py-8 sm:py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center gap-3 mb-4">
-                <img
-                  src="/logo-kplonwe.png"
-                  alt="KPLONWE"
-                  className="h-14 sm:h-16 w-auto object-contain"
+            {/* Image 2: Bottom Left */}
+            <FadeInView delay={500} direction="up" className="absolute bottom-10 left-0 w-[55%] h-[50%] z-30">
+              <div className="w-full h-full rounded-3xl overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border-4 border-white transform hover:scale-[1.02] transition-transform duration-700">
+                <img 
+                  src="https://st3.depositphotos.com/1037987/16666/i/450/depositphotos_166664800-stock-photo-kids-raising-hands-during-lesson.jpg" 
+                  alt="Élèves levant la main" 
+                  className="w-full h-full object-cover"
                 />
               </div>
-              <p className="text-sm text-gray-400">
-                La plateforme éducative qui connecte enseignants, parents et élèves.
+            </FadeInView>
+
+            {/* Floating Badge */}
+            <FadeInView delay={800} direction="none" className="absolute top-1/2 left-1/4 -translate-y-1/2 -translate-x-1/2 z-40">
+              <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-white/50 animate-[float_4s_ease-in-out_infinite]">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-[#fdb32a] flex items-center justify-center text-white">
+                    <Star size={24} fill="currentColor" />
+                  </div>
+                  <div>
+                    <p className="font-extrabold text-2xl text-gray-900 leading-none">98%</p>
+                    <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mt-1">de Réussite</p>
+                  </div>
+                </div>
+              </div>
+            </FadeInView>
+
+            {/* Background Decorative Shape */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary-50 rounded-full blur-[100px] z-0"></div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ HUMAN TOUCH & MISSION SECTION ════════════════════════════════ */}
+      <section className="py-24 bg-gray-900 text-white relative overflow-hidden">
+        {/* Abstract background */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary-500 rounded-full blur-[120px]"></div>
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#fdb32a] rounded-full blur-[120px]"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            
+            <FadeInView direction="right">
+              <div className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-2xl">
+                <img 
+                  src="https://img.freepik.com/photos-gratuite/groupe-enfants-africains-pretant-attention-classe_23-2148892516.jpg" 
+                  alt="Enfants attentifs en classe" 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-primary-900/20 mix-blend-multiply"></div>
+              </div>
+            </FadeInView>
+
+            <div className="space-y-8">
+              <FadeInView delay={100}>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight">
+                  Parce que chaque enfant mérite <span className="text-[#fdb32a] italic">toute notre attention.</span>
+                </h2>
+              </FadeInView>
+              
+              <FadeInView delay={200}>
+                <p className="text-xl text-gray-300 font-light leading-relaxed">
+                  L'éducation n'est pas qu'une transmission de savoirs. C'est une question de confiance, de méthode et d'écoute. KPLONWE connecte des familles avec des enseignants qui comprennent véritablement les défis scolaires africains.
+                </p>
+              </FadeInView>
+
+              <FadeInView delay={300}>
+                <div className="grid sm:grid-cols-2 gap-6 pt-6 border-t border-gray-800">
+                  <div>
+                    <h4 className="text-5xl font-black text-white mb-2">2.5k<span className="text-primary-500">+</span></h4>
+                    <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Familles Accompagnées</p>
+                  </div>
+                  <div>
+                    <h4 className="text-5xl font-black text-white mb-2">500<span className="text-[#fdb32a]">+</span></h4>
+                    <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Experts Certifiés</p>
+                  </div>
+                </div>
+              </FadeInView>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ EXPERT BENTO GRID FEATURES ═══════════════════════════════════ */}
+      <section className="py-32 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <FadeInView className="text-center max-w-3xl mx-auto mb-20">
+          <h2 className="text-primary-600 font-bold tracking-widest text-sm uppercase mb-4">L'excellence en action</h2>
+          <h3 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
+            Une approche centrée sur l'humain et la technologie.
+          </h3>
+        </FadeInView>
+
+        <div className="grid md:grid-cols-3 gap-6 auto-rows-[300px]">
+          
+          {/* Card 1: Wide */}
+          <FadeInView delay={100} className="md:col-span-2 bg-gray-50 rounded-[2.5rem] p-10 relative overflow-hidden group hover:shadow-xl transition-all">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary-100 rounded-bl-[100px] -z-10 transition-transform group-hover:scale-110"></div>
+            <ShieldCheck size={48} strokeWidth={1.5} className="text-primary-600 mb-8" />
+            <h4 className="text-3xl font-bold text-gray-900 mb-4">Profils Rigoureusement Vérifiés</h4>
+            <p className="text-lg text-gray-600 max-w-md">
+              Nous rencontrons et certifions chaque répétiteur. Leurs diplômes, leur identité et leur pédagogie sont scrupuleusement analysés.
+            </p>
+          </FadeInView>
+
+          {/* Card 2: Square Image */}
+          <FadeInView delay={200} className="bg-primary-600 rounded-[2.5rem] relative overflow-hidden group">
+            <img 
+              src="https://i0.wp.com/oecd-development-matters.org/wp-content/uploads/2022/12/digitalisation-west-africa-education-development-matters-1220x675-1.jpg?fit=1200%2C675&ssl=1" 
+              alt="Digitalisation" 
+              className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50 group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-primary-900 via-primary-900/40 to-transparent p-10 flex flex-col justify-end">
+              <h4 className="text-2xl font-bold text-white mb-2">Suivi Numérique</h4>
+              <p className="text-primary-100">Des outils digitaux pour mesurer la progression au jour le jour.</p>
+            </div>
+          </FadeInView>
+
+          {/* Card 3: Square */}
+          <FadeInView delay={300} className="bg-white border border-gray-100 shadow-sm rounded-[2.5rem] p-10 hover:shadow-xl transition-all hover:border-primary-100">
+            <GraduationCap size={48} strokeWidth={1.5} className="text-[#fdb32a] mb-8" />
+            <h4 className="text-2xl font-bold text-gray-900 mb-4">Coaching d'Excellence</h4>
+            <p className="text-gray-600">
+              Des méthodes éprouvées pour préparer sereinement les examens nationaux.
+            </p>
+          </FadeInView>
+
+          {/* Card 4: Wide */}
+          <FadeInView delay={400} className="md:col-span-2 bg-[#fdb32a] rounded-[2.5rem] p-10 relative overflow-hidden group">
+            <div className="relative z-10 w-full md:w-2/3 h-full flex flex-col justify-center">
+              <Users size={48} strokeWidth={1.5} className="text-gray-900 mb-8" />
+              <h4 className="text-3xl font-bold text-gray-900 mb-4">Une Communauté Solidaire</h4>
+              <p className="text-lg text-gray-900/80">
+                Un forum d'entraide et un classement motivant pour que chaque élève trouve sa voie.
+              </p>
+            </div>
+            {/* Decorative pattern */}
+            <svg className="absolute -right-20 -bottom-20 w-96 h-96 text-white/20 transform rotate-12 group-hover:rotate-45 transition-transform duration-[2000ms]" fill="currentColor" viewBox="0 0 100 100">
+              <path d="M50 0 L100 50 L50 100 L0 50 Z" />
+            </svg>
+          </FadeInView>
+
+        </div>
+      </section>
+
+      {/* ═══ THEMATIC CTA WITH BANNER IMAGE ═══════════════════════════════ */}
+      <section className="relative py-32 overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src="https://assets.globalpartnership.org/s3fs-public/styles/standard_blog_banner/public/blog_post/image/11173216786_fbef7350ac_k.jpg?VersionId=DiLpqoIBDAEmXwFWHUVUASOx6RMj91pb&itok=Z5O7pEzt" 
+            alt="Enfants dans une salle de classe" 
+            className="w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-primary-900/80 backdrop-blur-sm"></div>
+        </div>
+
+        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+          <FadeInView>
+            <h2 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-8 tracking-tight">
+              Investissez dans leur <span className="text-[#fdb32a]">avenir.</span>
+            </h2>
+          </FadeInView>
+          <FadeInView delay={200}>
+            <p className="text-xl text-primary-100 mb-12 max-w-2xl mx-auto font-light">
+              L'éducation a le pouvoir de changer des vies. Rejoignez la communauté KPLONWE aujourd'hui pour offrir ou donner le meilleur accompagnement possible.
+            </p>
+          </FadeInView>
+          <FadeInView delay={300}>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <Link
+                to="/register"
+                className="bg-white text-gray-900 hover:bg-gray-100 px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl transition-all hover:scale-105"
+              >
+                Inscrire un élève
+              </Link>
+              <Link
+                to="/register"
+                className="bg-[#fdb32a] text-gray-900 hover:bg-[#eb9d13] px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl transition-all hover:scale-105"
+              >
+                Devenir répétiteur
+              </Link>
+            </div>
+          </FadeInView>
+        </div>
+      </section>
+
+      {/* ═══ FOOTER ═══════════════════════════════════════════════════════ */}
+      <footer className="bg-white pt-24 pb-12 border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8 mb-16">
+            <div className="md:col-span-5">
+              <img
+                src="/logo-kplonwe.png"
+                alt="KPLONWE"
+                className="h-16 w-auto object-contain mb-8"
+              />
+              <p className="text-gray-500 max-w-sm text-lg leading-relaxed">
+                Connecter les esprits brillants. La plateforme de mentorat et de soutien scolaire premium du Bénin.
               </p>
             </div>
 
-            <div>
-              <h4 className="text-white font-semibold mb-4 text-sm sm:text-base">Produit</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition">Fonctionnalités</a></li>
-                <li><a href="#" className="hover:text-white transition">Tarifs</a></li>
-                <li><a href="#" className="hover:text-white transition">FAQ</a></li>
+            <div className="md:col-span-3 md:col-start-7">
+              <h4 className="text-gray-900 font-bold mb-6 text-xl tracking-tight">Navigation</h4>
+              <ul className="space-y-4">
+                <li><Link to="/teachers" className="text-gray-500 hover:text-primary-600 transition-colors">Trouver un professeur</Link></li>
+                <li><Link to="/ranking" className="text-gray-500 hover:text-primary-600 transition-colors">Le Classement</Link></li>
+                <li><Link to="/forum" className="text-gray-500 hover:text-primary-600 transition-colors">Forum d'entraide</Link></li>
               </ul>
             </div>
 
-            <div>
-              <h4 className="text-white font-semibold mb-4 text-sm sm:text-base">Entreprise</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition">À propos</a></li>
-                <li><a href="#" className="hover:text-white transition">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition">Carrières</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-white font-semibold mb-4 text-sm sm:text-base">Légal</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition">Confidentialité</a></li>
-                <li><a href="#" className="hover:text-white transition">CGU</a></li>
-                <li><a href="#" className="hover:text-white transition">Mentions légales</a></li>
+            <div className="md:col-span-3">
+              <h4 className="text-gray-900 font-bold mb-6 text-xl tracking-tight">Légal</h4>
+              <ul className="space-y-4">
+                <li><Link to="#" className="text-gray-500 hover:text-primary-600 transition-colors">Confidentialité</Link></li>
+                <li><Link to="#" className="text-gray-500 hover:text-primary-600 transition-colors">CGU</Link></li>
+                <li><Link to="#" className="text-gray-500 hover:text-primary-600 transition-colors">Mentions légales</Link></li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-500">
-            <p>
-              © 2026{' '}
-              <span className="text-primary-400">KPL</span>
-              <span className="text-[#FDB32A]">O</span>
-              <span className="text-primary-400">NWE</span>
-              . Tous droits réservés.
+          <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-gray-400 font-medium text-sm">
+              © 2026 KPLONWE. Tous droits réservés.
             </p>
+            <div className="flex items-center gap-2 text-gray-400 text-sm font-medium">
+              Made with <Heart size={16} fill="currentColor" className="text-red-500 mx-1" /> in Bénin
+            </div>
           </div>
         </div>
       </footer>

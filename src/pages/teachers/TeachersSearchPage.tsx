@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
-import { Search, User, BookOpen, Star, CheckCircle, Clock, UserPlus, Check } from 'lucide-react';
+import { Search, User, BookOpen, Star, CheckCircle, UserPlus, Check } from 'lucide-react';
 
 interface Teacher {
   id: string;
@@ -276,7 +276,7 @@ export function TeachersSearchPage() {
                       <img
                         src={teacher.user.avatar.startsWith('http')
                           ? teacher.user.avatar
-                          : `http://localhost:5000${teacher.user.avatar}`}
+                          : `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}${teacher.user.avatar}`}
                         alt={`Photo de ${teacher.user.firstName} ${teacher.user.lastName}`}
                         className="w-16 h-16 rounded-full object-cover"
                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -299,17 +299,11 @@ export function TeachersSearchPage() {
                     </div>
                   </div>
 
-                  {/* Statut */}
+                  {/* Statut Certifié (Anciennement Vérifié) */}
                   {teacher.validationStatus === 'VERIFIED' && (
                     <div className="flex items-center gap-2 mb-3">
-                      <CheckCircle size={16} className="text-green-600" aria-hidden="true" />
-                      <span className="text-sm text-green-600 font-medium">Vérifié</span>
-                    </div>
-                  )}
-                  {teacher.validationStatus === 'PENDING' && (
-                    <div className="flex items-center gap-2 mb-3">
-                      <Clock size={16} className="text-yellow-600" aria-hidden="true" />
-                      <span className="text-sm text-yellow-600 font-medium">En attente</span>
+                      <CheckCircle size={16} className="text-primary-600" aria-hidden="true" />
+                      <span className="text-sm text-primary-600 font-bold uppercase tracking-wider">Certifié</span>
                     </div>
                   )}
 

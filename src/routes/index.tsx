@@ -11,6 +11,10 @@ import { NotFoundPage } from '@/pages/public/NotFoundPage';
 // Auth
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
+import { VerifyEmailPage } from '@/pages/auth/VerifyEmailPage';
+import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
+import { ForgotPasswordVerifyPage } from '@/pages/auth/ForgotPasswordVerifyPage';
+import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage';
 
 // Legal
 import { TermsPage } from '@/pages/legal/TermsPage';
@@ -28,15 +32,12 @@ import { AccessibilitySettingsPage } from '@/pages/settings/AccessibilitySetting
 import { MessagesListPage } from '@/pages/messages/MessagesListPage';
 import { ConversationPage } from '@/pages/messages/ConversationPage';
 
-// Orientation
-import { OrientationPage } from '@/pages/orientation/OrientationPage';
 
 // Teacher
 import { TeacherProfilePage } from '@/pages/teacher/TeacherProfilePage';
 import { TeacherProfileEditPage } from '@/pages/teacher/TeacherProfileEditPage';
 import { TeacherDocumentsPage } from '@/pages/teacher/TeacherDocumentsPage';
 import { TeacherAvatarUploadPage } from '@/pages/teacher/TeacherAvatarUploadPage';
-import { TeacherMyProfilePage } from '@/pages/teacher/TeacherMyProfilePage';
 import { TeachersSearchPage } from '@/pages/teachers/TeachersSearchPage';
 
 // ── ADMIN ──────────────────────────────────────────────────────────────────
@@ -94,6 +95,10 @@ export function AppRoutes() {
       } />
       <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <MainLayout><LoginPage /></MainLayout>} />
       <Route path="/register" element={user ? <Navigate to="/dashboard" replace /> : <MainLayout><RegisterPage /></MainLayout>} />
+      <Route path="/verify-email" element={<MainLayout><VerifyEmailPage /></MainLayout>} />
+      <Route path="/forgot-password" element={<MainLayout><ForgotPasswordPage /></MainLayout>} />
+      <Route path="/forgot-password/verify" element={<MainLayout><ForgotPasswordVerifyPage /></MainLayout>} />
+      <Route path="/reset-password" element={<MainLayout><ResetPasswordPage /></MainLayout>} />
 
       {/* ── Legal ── */}
       <Route path="/terms" element={<TermsPage />} />
@@ -144,13 +149,6 @@ export function AppRoutes() {
       <Route path="/admin/schools" element={<AdminRoute><AdminSchoolsPage /></AdminRoute>} />
       <Route path="/admin/manage-admins" element={<AdminRoute><AdminManageAdminsPage /></AdminRoute>} />
 
-      {/* ── Orientation ── */}
-      <Route path="/orientation/:studentId" element={
-        <ProtectedRoute><MainLayout><OrientationPage /></MainLayout></ProtectedRoute>
-      } />
-      <Route path="/orientation" element={
-        <ProtectedRoute><MainLayout><OrientationPage /></MainLayout></ProtectedRoute>
-      } />
 
       {/* ── 404 ── */}
       <Route path="*" element={<MainLayout><NotFoundPage /></MainLayout>} />

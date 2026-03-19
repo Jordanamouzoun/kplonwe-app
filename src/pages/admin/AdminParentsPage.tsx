@@ -23,7 +23,7 @@ export function AdminParentsPage() {
   async function loadParents() {
     try {
       const res = await api.get('/admin/parents');
-      setParents(res.data?.parents || res.data || []);
+      setParents(res.data?.data || res.data?.parents || (Array.isArray(res.data) ? res.data : []));
     } catch (err) {
       console.error('Erreur:', err);
     } finally {

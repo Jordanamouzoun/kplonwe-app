@@ -22,7 +22,7 @@ export function AdminSchoolsPage() {
   async function loadSchools() {
     try {
       const res = await api.get('/admin/schools');
-      setSchools(res.data?.schools || res.data || []);
+      setSchools(res.data?.data || res.data?.schools || (Array.isArray(res.data) ? res.data : []));
     } catch (err) {
       console.error('Erreur:', err);
     } finally {

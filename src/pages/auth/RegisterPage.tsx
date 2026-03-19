@@ -51,7 +51,7 @@ export function RegisterPage() {
     setLoading(true);
     try {
       await registerUser(formData);
-      navigate('/dashboard');
+      navigate(`/verify-email?email=${encodeURIComponent(formData.email)}`);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors de l\'inscription');
     } finally {

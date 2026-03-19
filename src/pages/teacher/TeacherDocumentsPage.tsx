@@ -282,7 +282,7 @@ export function TeacherDocumentsPage() {
                       {/* Actions */}
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <a
-                          href={`${BACKEND_URL}${doc.filePath}`}
+                          href={doc.filePath.startsWith('http') ? doc.filePath : `${BACKEND_URL}${doc.filePath}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-lg"

@@ -1,9 +1,9 @@
-import { useState, FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, FormEvent, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { LogIn } from 'lucide-react';
+import { LogIn, CheckCircle2 } from 'lucide-react';
 
 const ERROR_MESSAGES: Record<string, string> = {
   'Email ou mot de passe incorrect': 'L\'email ou le mot de passe que vous avez saisi est incorrect',
@@ -13,6 +13,7 @@ const ERROR_MESSAGES: Record<string, string> = {
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   
   const [formData, setFormData] = useState({
@@ -23,6 +24,13 @@ export function LoginPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [globalError, setGlobalError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+    }
+  }, [location.state]);
 
   function validateForm(): boolean {
     const newErrors: Record<string, string> = {};
@@ -53,6 +61,10 @@ export function LoginPage() {
       await login(formData);
       navigate('/dashboard');
     } catch (error: any) {
+      if (error.response?.data?.needsVerification) {
+        navigate(`/verify-email?email=${encodeURIComponent(formData.email)}`);
+        return;
+      }
       const errorMessage = error.response?.data?.message || error.message || 'Une erreur est survenue';
       setGlobalError(ERROR_MESSAGES[errorMessage] || errorMessage);
     } finally {
@@ -77,6 +89,13 @@ export function LoginPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6" noValidate>
+          {successMessage && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center gap-3">
+              <CheckCircle2 size={18} className="text-green-500 flex-shrink-0" />
+              <p className="text-sm font-medium">{successMessage}</p>
+            </div>
+          )}
+
           {globalError && (
             <div 
               className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg" 
@@ -118,6 +137,15 @@ export function LoginPage() {
               required
               autoComplete="current-password"
             />
+          </div>
+
+          <div className="flex items-center justify-end">
+            <Link 
+              to="/forgot-password" 
+              className="text-sm font-medium text-primary-600 hover:text-primary-500"
+            >
+              Mot de passe oublié ?
+            </Link>
           </div>
 
           <Button 

@@ -3,16 +3,22 @@ import { useParams } from 'react-router-dom';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import {
-  MapPin, Briefcase, Award, Star, BookOpen,
+  Briefcase, Award, Star, BookOpen,
   DollarSign, Clock, CheckCircle, FileText, MessageSquare
 } from 'lucide-react';
 
 interface TeacherProfile {
   id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
   avatar?: string;
+  user?: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    avatar?: string;
+  };
   profile?: {
     bio?: string;
     subjects?: string[];
@@ -34,8 +40,8 @@ export function TeacherPublicProfilePage() {
 
   async function loadTeacher() {
     try {
-      const res = await api.get(`/teachers/${teacherId}`);
-      setTeacher(res.data?.teacher || res.data);
+      const res = await api.get(`/teachers/${teacherId}/profile`);
+      setTeacher(res.data?.profile || res.data?.teacher || res.data);
     } catch (err) {
       console.error('Erreur:', err);
     } finally {
@@ -80,16 +86,21 @@ export function TeacherPublicProfilePage() {
 
               {/* Avatar */}
               <div className="relative flex-shrink-0">
-                {teacher.avatar ? (
+                {teacher.user?.avatar || teacher.avatar ? (
                   <img
-                    src={teacher.avatar}
-                    alt={`${teacher.firstName} ${teacher.lastName}`}
+                    src={(() => {
+                      const av = teacher.user?.avatar || teacher.avatar;
+                      if (!av) return '';
+                      if (av.startsWith('http') || av.startsWith('data:')) return av;
+                      return `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}${av}`;
+                    })()}
+                    alt={`${teacher.user?.firstName || teacher.firstName} ${teacher.user?.lastName || teacher.lastName}`}
                     className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full border-4 border-white shadow-lg object-cover"
                   />
                 ) : (
                   <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full border-4 border-white shadow-lg bg-primary-100 flex items-center justify-center">
                     <span className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-primary-700">
-                      {teacher.firstName[0]}{teacher.lastName[0]}
+                      {(teacher.user?.firstName || teacher.firstName)?.[0]}{(teacher.user?.lastName || teacher.lastName)?.[0]}
                     </span>
                   </div>
                 )}
@@ -104,7 +115,7 @@ export function TeacherPublicProfilePage() {
               <div className="flex-1 text-center sm:text-left w-full sm:w-auto">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
                   <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900 break-words overflow-wrap-anywhere leading-tight">
-                    {teacher.firstName} {teacher.lastName}
+                    {teacher.user?.firstName || teacher.firstName} {teacher.user?.lastName || teacher.lastName}
                   </h1>
                   {isVerified && (
                     <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold mx-auto sm:mx-0">
@@ -271,7 +282,7 @@ export function TeacherPublicProfilePage() {
             <div className="bg-primary-50 border border-primary-200 rounded-xl p-6">
               <h3 className="font-bold text-primary-900 mb-2">Intéressé ?</h3>
               <p className="text-sm text-primary-800 mb-4">
-                Contactez {teacher.firstName} pour en savoir plus sur ses cours.
+                Contactez {teacher.user?.firstName || teacher.firstName} pour en savoir plus sur ses cours.
               </p>
               <Button fullWidth>
                 <MessageSquare size={18} className="mr-2" />
