@@ -1,352 +1,273 @@
-import { useEffect, useRef, useState, ReactNode } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, Star, Heart, GraduationCap, Users, ShieldCheck } from 'lucide-react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Search, GraduationCap, Clock, ArrowRight, CheckCircle, Globe, Lightbulb, Atom, BookOpen, Code, Quote } from 'lucide-react';
 
-// --- Animated Component Wrapper ---
-function FadeInView({ 
-  children, 
-  delay = 0, 
-  direction = 'up',
-  className = "" 
-}: { 
-  children: ReactNode, 
-  delay?: number, 
-  direction?: 'up' | 'down' | 'left' | 'right' | 'none',
-  className?: string 
-}) {
-  const domRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setVisible] = useState(false);
+export function LandingPage() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) {
-        setVisible(true);
-        domRef.current && observer.unobserve(domRef.current);
-      }
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-    
-    if (domRef.current) observer.observe(domRef.current);
-    return () => observer.disconnect();
-  }, []);
+  const categories = [
+    { id: 'maths', name: 'Mathématiques', icon: <GraduationCap />, color: 'bg-blue-500' },
+    { id: 'english', name: 'Anglais', icon: <Globe />, color: 'bg-indigo-500' },
+    { id: 'physics', name: 'Physique-Chimie', icon: <AtomIcon />, color: 'bg-amber-500' },
+    { id: 'french', name: 'Français', icon: <BookOpenIcon />, color: 'bg-rose-500' },
+    { id: 'it', name: 'Informatique', icon: <CodeIcon />, color: 'bg-emerald-500' },
+  ];
 
-  const getTranslate = () => {
-    switch (direction) {
-      case 'up': return 'translate-y-12';
-      case 'down': return '-translate-y-12';
-      case 'left': return 'translate-x-12';
-      case 'right': return '-translate-x-12';
-      case 'none': return '';
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/teachers?search=${encodeURIComponent(searchQuery)}`);
+    } else {
+      navigate('/teachers');
     }
   };
 
+  const handleCategoryClick = (categoryId: string) => {
+    navigate(`/teachers?category=${categoryId}`);
+  };
+
   return (
-    <div
-      ref={domRef}
-      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-        isVisible ? 'opacity-100 translate-y-0 translate-x-0' : `opacity-0 ${getTranslate()}`
-      } ${className}`}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      {children}
+    <div className="min-h-screen bg-white font-cinematic selection:bg-primary-100 selection:text-primary-900 overflow-x-hidden">
+      
+      {/* SECTION 1: HERO IMMERSIF (CINÉMATIQUE) */}
+      <section className="relative min-h-[90vh] flex items-center justify-center pt-20 overflow-hidden">
+        {/* Background Image with Cinematic Overlay */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="/hero_cinematic.png" 
+            alt="Education au Bénin" 
+            className="w-full h-full object-cover scale-105 animate-pulse-slow object-[80%_center]"
+          />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-white/90"></div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center lg:text-left flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          <div className="flex-1 animate-cinematic">
+
+            <h1 className="text-5xl lg:text-7xl xl:text-8xl font-black text-white mb-8 tracking-tighter leading-[0.9]">
+              Propulsez votre <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-blue-200">réussite</span> dès <br />
+              aujourd'hui.
+            </h1>
+            
+            <p className="text-lg lg:text-xl text-white/80 max-w-xl mb-10 font-medium leading-relaxed">
+              KPLONWE connecte les meilleurs enseignants du Bénin avec les élèves qui rêvent de grandeur. Une éducation authentique, humaine et sans compromis.
+            </p>
+
+            {/* Premium Integrated Search Bar */}
+            <form onSubmit={handleSearch} className="relative max-w-2xl group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary-600 to-blue-500 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+              <div className="relative flex items-center bg-white rounded-2xl shadow-2xl p-2 gap-2">
+                <div className="flex-1 flex items-center px-4 gap-3 border-r border-gray-100">
+                  <Search className="text-gray-400" size={24} />
+                  <input 
+                    type="text" 
+                    placeholder="Quelle matière souhaitez-vous maîtriser ?"
+                    className="w-full py-4 text-gray-900 font-bold placeholder:text-gray-400 focus:outline-none text-base sm:text-lg"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <button 
+                  type="submit"
+                  className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-xl font-black text-base transition-all flex items-center gap-2 shadow-lg shadow-primary-600/20 active:scale-95"
+                >
+                  Chercher
+                  <ArrowRight size={20} />
+                </button>
+              </div>
+            </form>
+
+            <div className="mt-8 flex items-center gap-8 text-white/60">
+              <div className="flex flex-col">
+                <span className="text-2xl font-black text-white">2k+</span>
+                <span className="text-[10px] uppercase tracking-widest font-bold">Répétiteurs</span>
+              </div>
+              <div className="h-8 w-px bg-white/10"></div>
+              <div className="flex flex-col">
+                <span className="text-2xl font-black text-white">24/7</span>
+                <span className="text-[10px] uppercase tracking-widest font-bold">Accompagnement</span>
+              </div>
+              <div className="h-8 w-px bg-white/10"></div>
+              <div className="flex flex-col">
+                <span className="text-2xl font-black text-white">Cotonou</span>
+                <span className="text-[10px] uppercase tracking-widest font-bold">Siège social</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 2: CATEGORIES (MINIMALIST) */}
+      <section className="py-24 bg-white relative z-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
+            <div className="animate-cinematic">
+              <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-4 tracking-tighter">Nos univers de savoir.</h2>
+              <p className="text-lg text-gray-500 font-medium max-w-xl">Explorez les disciplines les plus demandées par les parents et élèves à Fidjrossè, Cadjehoun et Porto-Novo.</p>
+            </div>
+            <button 
+              onClick={() => navigate('/teachers')}
+              className="group flex items-center gap-2 text-primary-600 font-black text-lg hover:gap-4 transition-all"
+            >
+              Voir tout le catalogue
+              <ArrowRight size={24} />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            {categories.map((cat, idx) => (
+              <button
+                key={cat.id}
+                onClick={() => handleCategoryClick(cat.id)}
+                className={`group flex flex-col items-center justify-center p-8 rounded-[2rem] border-2 border-gray-50 bg-gray-50/50 hover:bg-white hover:border-primary-500 hover:-translate-y-2 transition-all duration-300 animate-cinematic`}
+                style={{ animationDelay: `${idx * 100}ms` }}
+              >
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-inner ${cat.color} text-white group-hover:scale-110 group-hover:rotate-12 transition-transform`}>
+                  {cat.icon}
+                </div>
+                <span className="font-black text-gray-900 text-center tracking-tight">{cat.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 3: REEL MOMENT D'APPRENTISSAGE (STORYTELLING) */}
+      <section className="py-24 bg-gray-900 text-white overflow-hidden relative">
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
+          <div className="relative animate-cinematic">
+            <div className="absolute -top-10 -left-10 w-40 h-40 bg-primary-600/20 blur-[80px] rounded-full"></div>
+            <div className="relative rounded-[3rem] overflow-hidden shadow-2xl border border-white/10 group">
+              <img 
+                src="/community_authentic.png" 
+                alt="Parents et élèves" 
+                className="w-full h-auto scale-100 group-hover:scale-110 transition-transform duration-1000"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-transparent to-transparent"></div>
+            </div>
+            {/* Real Quote Overlay */}
+            <div className="absolute -bottom-10 -right-6 lg:-right-12 glass-dark p-6 rounded-3xl max-w-xs border border-white/20 shadow-2xl animate-cinematic delay-500">
+               <Quote className="text-primary-400 mb-4" size={32} />
+               <p className="text-sm font-bold italic mb-4 leading-relaxed">"Grâce à M. Dossou, ma fille a enfin compris les bases de l'anglais. C'est le meilleur investissement pour son avenir."</p>
+               <div className="flex items-center gap-3">
+                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500"></div>
+                 <div>
+                   <p className="text-xs font-black">Mme Soglo</p>
+                   <p className="text-[10px] text-white/50 uppercase tracking-widest font-black">Mère d'élève, Cotonou</p>
+                 </div>
+               </div>
+            </div>
+          </div>
+
+          <div className="animate-cinematic delay-300">
+            <h2 className="text-5xl lg:text-7xl font-black mb-10 tracking-tighter leading-none italic uppercase">
+              Plus qu'une plateforme, <br />
+              <span className="text-primary-500">une famille.</span>
+            </h2>
+            <div className="space-y-8">
+              <div className="flex gap-6 items-start group">
+                <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10 group-hover:bg-primary-600 group-hover:border-primary-500 transition-all duration-300">
+                  <CheckCircle size={24} className="text-primary-400 group-hover:text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black mb-2">Enseignants vérifiés</h3>
+                  <p className="text-gray-400 font-medium">Chaque dossier est analysé avec soin. Diplômes, casier judiciaire et pédagogie sont au cœur de notre sélection.</p>
+                </div>
+              </div>
+              <div className="flex gap-6 items-start group">
+                <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10 group-hover:bg-blue-600 group-hover:border-blue-500 transition-all duration-300">
+                  <Lightbulb size={24} className="text-blue-400 group-hover:text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black mb-2">Méthodes modernes</h3>
+                  <p className="text-gray-400 font-medium">Nos répétiteurs utilisent des techniques interactives pour redonner le goût de l'étude à votre enfant.</p>
+                </div>
+              </div>
+              <div className="flex gap-6 items-start group">
+                <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10 group-hover:bg-indigo-600 group-hover:border-indigo-500 transition-all duration-300">
+                  <Clock size={24} className="text-indigo-400 group-hover:text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black mb-2">Suivi rigoureux</h3>
+                  <p className="text-gray-400 font-medium">Recevez des rapports réguliers sur la progression de votre enfant via votre tableau de bord.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 5: FINAL CTA (CIMEMATIC) */}
+      <section className="py-24 relative overflow-hidden bg-white">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+          <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center gap-16">
+          <div className="flex-1 animate-cinematic">
+            <h2 className="text-5xl lg:text-7xl font-black text-gray-900 mb-8 tracking-tighter leading-none">
+              L'avenir se construit <br />
+              <span className="text-gradient">ici et maintenant.</span>
+            </h2>
+            <p className="text-xl text-gray-500 font-medium mb-12 max-w-lg leading-relaxed">
+              Donnez à votre enfant les outils pour briller au Bénin et à l'international. Rejoignez les milliers de familles qui nous font confiance.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6">
+              <button 
+                onClick={() => navigate('/register')}
+                className="px-10 py-5 bg-primary-600 text-white rounded-2xl font-black text-lg shadow-2xl shadow-primary-600/30 hover:shadow-primary-600/50 hover:scale-105 transition-all active:scale-95"
+              >
+                Commencer l'aventure
+              </button>
+              <button 
+                onClick={() => navigate('/teachers')}
+                className="px-10 py-5 bg-white border-2 border-primary-600 text-primary-600 rounded-2xl font-black text-lg hover:bg-primary-50 transition-all"
+              >
+                Explorer les profils
+              </button>
+            </div>
+          </div>
+          <div className="flex-1 relative animate-cinematic delay-300">
+             <div className="relative z-10 rounded-[3rem] overflow-hidden rotate-2 shadow-2xl border-4 border-white">
+                <img src="/african_classroom.png" alt="Élève béninois" className="w-full h-auto" />
+             </div>
+             <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-100 rounded-full -z-10 blur-[50px]"></div>
+             <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-primary-100 rounded-full -z-10 blur-[70px]"></div>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER PREVIEW (CLEAN) */}
+      <footer className="py-20 bg-gray-50 border-t border-gray-100">
+         <div className="max-w-7xl mx-auto px-6 text-center">
+            <img src="/logo-kplonwe.png" alt="KPLONWE" className="h-20 mx-auto mb-8 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
+            <p className="text-gray-400 font-bold uppercase tracking-widest text-sm mb-4">Made with pride in Cotonou, Bénin.</p>
+            <div className="flex items-center justify-center gap-6 text-gray-400 font-black text-xs uppercase tracking-tighter">
+               <a href="#" className="hover:text-primary-600 transition-colors">Confidentialité</a>
+               <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+               <a href="#" className="hover:text-primary-600 transition-colors">Conditions</a>
+               <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+               <a href="#" className="hover:text-primary-600 transition-colors">Aide</a>
+            </div>
+         </div>
+      </footer>
     </div>
   );
 }
 
-export function LandingPage() {
-  return (
-    <div className="min-h-screen bg-[#FDFDFD] font-sans overflow-x-hidden selection:bg-primary-200 selection:text-primary-900">
+// Icons for categories (Missing in Lucide set or custom for design)
+function AtomIcon() {
+  return <Atom size={32} />;
+}
 
-      {/* ═══ EXPERT HERO SECTION ═══════════════════════════════════════════ */}
-      <section className="relative pt-8 pb-16 lg:pt-16 lg:pb-32 px-4 sm:px-6 lg:px-8 max-w-[90rem] mx-auto">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-start lg:pt-10">
-          
-          {/* Typography & CTA (Left) */}
-          <div className="lg:col-span-6 2xl:col-span-5 z-10 pt-4 lg:pt-0">
-            <div className="animate-[fade-in-up_0.5s_ease-out_forwards]">
-              <div className="inline-flex items-center gap-3 px-4 py-2 bg-primary-50 rounded-full text-primary-800 font-semibold mb-6 lg:mb-8 border border-primary-100/50 backdrop-blur-sm">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#fdb32a] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#fdb32a]"></span>
-                </span>
-                La nouvelle référence éducative
-              </div>
-            </div>
+function BookOpenIcon() {
+  return <BookOpen size={32} />;
+}
 
-            <div className="animate-[fade-in-up_0.6s_ease-out_forwards]">
-              <h1 className="text-5xl sm:text-6xl lg:text-[4.5rem] font-extrabold text-gray-900 leading-[1.05] tracking-tight mb-8">
-                L'éducation qui révèle <span className="text-primary-600 block mt-2">votre potentiel.</span>
-              </h1>
-            </div>
-
-            <div className="animate-[fade-in-up_0.7s_ease-out_forwards]">
-              <p className="text-lg sm:text-2xl text-gray-500 mb-10 leading-relaxed font-light max-w-xl">
-                Trouvez des répétiteurs passionnés et bénéficiez d'un accompagnement sur-mesure pour atteindre l'excellence scolaire au Bénin.
-              </p>
-            </div>
-
-            <div className="animate-[fade-in-up_0.8s_ease-out_forwards]">
-              <div className="flex flex-col sm:flex-row gap-5">
-                <Link
-                  to="/teachers"
-                  className="flex items-center justify-center gap-3 bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-[0_20px_40px_-15px_rgba(37,99,235,0.5)] hover:-translate-y-1"
-                >
-                  Trouver un répétiteur
-                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link
-                  to="/register"
-                  className="flex items-center justify-center gap-3 bg-white text-gray-900 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 px-8 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-lg"
-                >
-                  S'inscrire comme prof
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Expert Aesthetic Image Collage (Right) */}
-          <div className="lg:col-span-6 2xl:col-span-7 relative h-[500px] lg:h-[700px] hidden md:block">
-            {/* Image 1: Top Right */}
-            <FadeInView delay={300} direction="left" className="absolute top-0 right-0 w-[60%] h-[55%] z-20">
-              <div className="w-full h-full rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform hover:scale-[1.02] transition-transform duration-700">
-                <img 
-                  src="https://img.freepik.com/photos-gratuite/femme-africaine-enseignant-aux-enfants-classe_23-2148892564.jpg?semt=ais_hybrid&w=740&q=80" 
-                  alt="Enseignante africaine avec ses élèves" 
-                  className="w-full h-full object-cover object-top"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary-900/30 to-transparent"></div>
-              </div>
-            </FadeInView>
-
-            {/* Image 2: Bottom Left */}
-            <FadeInView delay={500} direction="up" className="absolute bottom-10 left-0 w-[55%] h-[50%] z-30">
-              <div className="w-full h-full rounded-3xl overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border-4 border-white transform hover:scale-[1.02] transition-transform duration-700">
-                <img 
-                  src="https://st3.depositphotos.com/1037987/16666/i/450/depositphotos_166664800-stock-photo-kids-raising-hands-during-lesson.jpg" 
-                  alt="Élèves levant la main" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </FadeInView>
-
-            {/* Floating Badge */}
-            <FadeInView delay={800} direction="none" className="absolute top-1/2 left-1/4 -translate-y-1/2 -translate-x-1/2 z-40">
-              <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-white/50 animate-[float_4s_ease-in-out_infinite]">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-[#fdb32a] flex items-center justify-center text-white">
-                    <Star size={24} fill="currentColor" />
-                  </div>
-                  <div>
-                    <p className="font-extrabold text-2xl text-gray-900 leading-none">98%</p>
-                    <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mt-1">de Réussite</p>
-                  </div>
-                </div>
-              </div>
-            </FadeInView>
-
-            {/* Background Decorative Shape */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary-50 rounded-full blur-[100px] z-0"></div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ HUMAN TOUCH & MISSION SECTION ════════════════════════════════ */}
-      <section className="py-24 bg-gray-900 text-white relative overflow-hidden">
-        {/* Abstract background */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary-500 rounded-full blur-[120px]"></div>
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#fdb32a] rounded-full blur-[120px]"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            
-            <FadeInView direction="right">
-              <div className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-2xl">
-                <img 
-                  src="https://img.freepik.com/photos-gratuite/groupe-enfants-africains-pretant-attention-classe_23-2148892516.jpg" 
-                  alt="Enfants attentifs en classe" 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-primary-900/20 mix-blend-multiply"></div>
-              </div>
-            </FadeInView>
-
-            <div className="space-y-8">
-              <FadeInView delay={100}>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight">
-                  Parce que chaque enfant mérite <span className="text-[#fdb32a] italic">toute notre attention.</span>
-                </h2>
-              </FadeInView>
-              
-              <FadeInView delay={200}>
-                <p className="text-xl text-gray-300 font-light leading-relaxed">
-                  L'éducation n'est pas qu'une transmission de savoirs. C'est une question de confiance, de méthode et d'écoute. KPLONWE connecte des familles avec des enseignants qui comprennent véritablement les défis scolaires africains.
-                </p>
-              </FadeInView>
-
-              <FadeInView delay={300}>
-                <div className="grid sm:grid-cols-2 gap-6 pt-6 border-t border-gray-800">
-                  <div>
-                    <h4 className="text-5xl font-black text-white mb-2">2.5k<span className="text-primary-500">+</span></h4>
-                    <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Familles Accompagnées</p>
-                  </div>
-                  <div>
-                    <h4 className="text-5xl font-black text-white mb-2">500<span className="text-[#fdb32a]">+</span></h4>
-                    <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Experts Certifiés</p>
-                  </div>
-                </div>
-              </FadeInView>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ EXPERT BENTO GRID FEATURES ═══════════════════════════════════ */}
-      <section className="py-32 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FadeInView className="text-center max-w-3xl mx-auto mb-20">
-          <h2 className="text-primary-600 font-bold tracking-widest text-sm uppercase mb-4">L'excellence en action</h2>
-          <h3 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
-            Une approche centrée sur l'humain et la technologie.
-          </h3>
-        </FadeInView>
-
-        <div className="grid md:grid-cols-3 gap-6 auto-rows-[300px]">
-          
-          {/* Card 1: Wide */}
-          <FadeInView delay={100} className="md:col-span-2 bg-gray-50 rounded-[2.5rem] p-10 relative overflow-hidden group hover:shadow-xl transition-all">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary-100 rounded-bl-[100px] -z-10 transition-transform group-hover:scale-110"></div>
-            <ShieldCheck size={48} strokeWidth={1.5} className="text-primary-600 mb-8" />
-            <h4 className="text-3xl font-bold text-gray-900 mb-4">Profils Rigoureusement Vérifiés</h4>
-            <p className="text-lg text-gray-600 max-w-md">
-              Nous rencontrons et certifions chaque répétiteur. Leurs diplômes, leur identité et leur pédagogie sont scrupuleusement analysés.
-            </p>
-          </FadeInView>
-
-          {/* Card 2: Square Image */}
-          <FadeInView delay={200} className="bg-primary-600 rounded-[2.5rem] relative overflow-hidden group">
-            <img 
-              src="https://i0.wp.com/oecd-development-matters.org/wp-content/uploads/2022/12/digitalisation-west-africa-education-development-matters-1220x675-1.jpg?fit=1200%2C675&ssl=1" 
-              alt="Digitalisation" 
-              className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50 group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary-900 via-primary-900/40 to-transparent p-10 flex flex-col justify-end">
-              <h4 className="text-2xl font-bold text-white mb-2">Suivi Numérique</h4>
-              <p className="text-primary-100">Des outils digitaux pour mesurer la progression au jour le jour.</p>
-            </div>
-          </FadeInView>
-
-          {/* Card 3: Square */}
-          <FadeInView delay={300} className="bg-white border border-gray-100 shadow-sm rounded-[2.5rem] p-10 hover:shadow-xl transition-all hover:border-primary-100">
-            <GraduationCap size={48} strokeWidth={1.5} className="text-[#fdb32a] mb-8" />
-            <h4 className="text-2xl font-bold text-gray-900 mb-4">Coaching d'Excellence</h4>
-            <p className="text-gray-600">
-              Des méthodes éprouvées pour préparer sereinement les examens nationaux.
-            </p>
-          </FadeInView>
-
-          {/* Card 4: Wide */}
-          <FadeInView delay={400} className="md:col-span-2 bg-[#fdb32a] rounded-[2.5rem] p-10 relative overflow-hidden group">
-            <div className="relative z-10 w-full md:w-2/3 h-full flex flex-col justify-center">
-              <Users size={48} strokeWidth={1.5} className="text-gray-900 mb-8" />
-              <h4 className="text-3xl font-bold text-gray-900 mb-4">Une Communauté Solidaire</h4>
-              <p className="text-lg text-gray-900/80">
-                Un forum d'entraide et un classement motivant pour que chaque élève trouve sa voie.
-              </p>
-            </div>
-            {/* Decorative pattern */}
-            <svg className="absolute -right-20 -bottom-20 w-96 h-96 text-white/20 transform rotate-12 group-hover:rotate-45 transition-transform duration-[2000ms]" fill="currentColor" viewBox="0 0 100 100">
-              <path d="M50 0 L100 50 L50 100 L0 50 Z" />
-            </svg>
-          </FadeInView>
-
-        </div>
-      </section>
-
-      {/* ═══ THEMATIC CTA WITH BANNER IMAGE ═══════════════════════════════ */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0">
-          <img 
-            src="https://assets.globalpartnership.org/s3fs-public/styles/standard_blog_banner/public/blog_post/image/11173216786_fbef7350ac_k.jpg?VersionId=DiLpqoIBDAEmXwFWHUVUASOx6RMj91pb&itok=Z5O7pEzt" 
-            alt="Enfants dans une salle de classe" 
-            className="w-full h-full object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-primary-900/80 backdrop-blur-sm"></div>
-        </div>
-
-        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-          <FadeInView>
-            <h2 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-8 tracking-tight">
-              Investissez dans leur <span className="text-[#fdb32a]">avenir.</span>
-            </h2>
-          </FadeInView>
-          <FadeInView delay={200}>
-            <p className="text-xl text-primary-100 mb-12 max-w-2xl mx-auto font-light">
-              L'éducation a le pouvoir de changer des vies. Rejoignez la communauté KPLONWE aujourd'hui pour offrir ou donner le meilleur accompagnement possible.
-            </p>
-          </FadeInView>
-          <FadeInView delay={300}>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Link
-                to="/register"
-                className="bg-white text-gray-900 hover:bg-gray-100 px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl transition-all hover:scale-105"
-              >
-                Inscrire un élève
-              </Link>
-              <Link
-                to="/register"
-                className="bg-[#fdb32a] text-gray-900 hover:bg-[#eb9d13] px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl transition-all hover:scale-105"
-              >
-                Devenir répétiteur
-              </Link>
-            </div>
-          </FadeInView>
-        </div>
-      </section>
-
-      {/* ═══ FOOTER ═══════════════════════════════════════════════════════ */}
-      <footer className="bg-white pt-24 pb-12 border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8 mb-16">
-            <div className="md:col-span-5">
-              <img
-                src="/logo-kplonwe.png"
-                alt="KPLONWE"
-                className="h-16 w-auto object-contain mb-8"
-              />
-              <p className="text-gray-500 max-w-sm text-lg leading-relaxed">
-                Connecter les esprits brillants. La plateforme de mentorat et de soutien scolaire premium du Bénin.
-              </p>
-            </div>
-
-            <div className="md:col-span-3 md:col-start-7">
-              <h4 className="text-gray-900 font-bold mb-6 text-xl tracking-tight">Navigation</h4>
-              <ul className="space-y-4">
-                <li><Link to="/teachers" className="text-gray-500 hover:text-primary-600 transition-colors">Trouver un professeur</Link></li>
-                <li><Link to="/ranking" className="text-gray-500 hover:text-primary-600 transition-colors">Le Classement</Link></li>
-                <li><Link to="/forum" className="text-gray-500 hover:text-primary-600 transition-colors">Forum d'entraide</Link></li>
-              </ul>
-            </div>
-
-            <div className="md:col-span-3">
-              <h4 className="text-gray-900 font-bold mb-6 text-xl tracking-tight">Légal</h4>
-              <ul className="space-y-4">
-                <li><Link to="#" className="text-gray-500 hover:text-primary-600 transition-colors">Confidentialité</Link></li>
-                <li><Link to="#" className="text-gray-500 hover:text-primary-600 transition-colors">CGU</Link></li>
-                <li><Link to="#" className="text-gray-500 hover:text-primary-600 transition-colors">Mentions légales</Link></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-gray-400 font-medium text-sm">
-              © 2026 KPLONWE. Tous droits réservés.
-            </p>
-            <div className="flex items-center gap-2 text-gray-400 text-sm font-medium">
-              Made with <Heart size={16} fill="currentColor" className="text-red-500 mx-1" /> in Bénin
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
+function CodeIcon() {
+  return <Code size={32} />;
 }

@@ -287,3 +287,44 @@ body {
 .alert-error {
   @apply bg-red-50 border-red-500 text-red-900;
 }
+/* ========================================
+   ANIMATIONS ET EFFETS CINÉMATIQUES
+   ======================================== */
+
+@keyframes cinematic-fade-in {
+  from { opacity: 0; transform: translateY(20px); filter: blur(10px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.animate-cinematic {
+  animation: cinematic-fade-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.glass-premium {
+  @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
+}
+
+.glass-dark {
+  @apply bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl;
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-blue-400;
+}
+
+.mask-premium {
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+}
+
+.cinematic-shadow {
+  @apply shadow-[0_20px_50px_rgba(0,0,0,0.1)];
+}
+
+/* Typography refinements */
+h1, h2, h3 {
+  @apply tracking-[-0.03em] leading-tight;
+}
+
+.font-cinematic {
+  font-family: 'Outfit', 'Inter', sans-serif;
+}

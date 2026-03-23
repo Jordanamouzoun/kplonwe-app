@@ -46,6 +46,12 @@ export interface User {
     schoolName?: string;
     hasSubscription?: boolean;
   };
+  
+  wallet?: {
+    id: string;
+    balance: number;
+    currency: string;
+  };
 }
 
 export interface AuthResponse {

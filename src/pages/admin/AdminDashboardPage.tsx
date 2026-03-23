@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '@/lib/api';
 import {
-  Users, GraduationCap, School, CheckCircle,
-  Clock, ShieldCheck, AlertTriangle
+  Users, GraduationCap, School, ShieldCheck, Star
 } from 'lucide-react';
 import { PMFCohortTable } from '@/components/admin/PMFCohortTable';
 
@@ -17,6 +16,7 @@ interface Stats {
   totalSchools: number;
   totalAdmins: number;
   totalStudents: number;
+  certifiedTeachers: number;
 }
 
 function StatCard({ label, value, icon, color, href }: {
@@ -66,41 +66,20 @@ export function AdminDashboardPage() {
       <h1 className="text-2xl font-bold text-gray-900 mb-1">Dashboard</h1>
       <p className="text-gray-500 mb-8">Vue d'ensemble de la plateforme KPLONWE</p>
 
-      {/* Alerte pending */}
-      {stats.pendingTeachers > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 flex items-center gap-3">
-          <AlertTriangle size={20} className="text-amber-600 flex-shrink-0" />
-          <div>
-            <p className="font-semibold text-amber-800">
-              {stats.pendingTeachers} professeur{stats.pendingTeachers > 1 ? 's' : ''} en attente de validation
-            </p>
-            <Link to="/admin/teachers" className="text-sm text-amber-600 hover:underline">
-              Voir les demandes →
-            </Link>
-          </div>
-        </div>
-      )}
-
       {/* Grille stats */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         <StatCard
-          label="Professeurs"
+          label="Total Professeurs"
           value={stats.totalTeachers}
           icon={<GraduationCap size={24} className="text-blue-600" />}
           color="bg-blue-50"
           href="/admin/teachers"
         />
         <StatCard
-          label="Professeurs validés"
-          value={stats.verifiedTeachers}
-          icon={<CheckCircle size={24} className="text-green-600" />}
-          color="bg-green-50"
-        />
-        <StatCard
-          label="En attente de validation"
-          value={stats.pendingTeachers}
-          icon={<Clock size={24} className="text-amber-600" />}
-          color="bg-amber-50"
+          label="Professeurs Certifiés"
+          value={stats.certifiedTeachers}
+          icon={<Star size={24} className="text-yellow-600" />}
+          color="bg-yellow-50"
           href="/admin/teachers"
         />
         <StatCard

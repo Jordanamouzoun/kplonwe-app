@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { Button } from '@/components/ui/Button';
 import { api } from '@/lib/api';
-import { BookOpen, Trophy, Target, PlayCircle, Info, AlertCircle } from 'lucide-react';
+import { BookOpen, Target, PlayCircle, Info, AlertCircle } from 'lucide-react';
 
 interface Quiz {
   id: string;
@@ -25,11 +25,18 @@ export function StudentDashboard() {
 
   async function loadQuizzes() {
     try {
-      const res = await api.get('/quiz');
-      const data = res.data?.quizzes ?? res.data?.data ?? [];
-      setQuizzes(Array.isArray(data) ? data.filter((q: Quiz) => q.status === 'PUBLISHED') : []);
-    } catch {
-      setError('Impossible de charger les quiz. Veuillez réessayer.');
+      const res = await api.get('/quizzes/assigned/me');
+      // Les données sont dans res.data.data d'après la nouvelle structure
+      const assignments = res.data?.data || [];
+      // On extrait les objets quiz des assignations
+      const quizList = assignments.map((a: any) => ({
+        ...a.quiz,
+        dueDate: a.dueDate,
+        _count: a.quiz?._count || { questions: 0 }
+      }));
+      setQuizzes(quizList);
+    } catch (error) {
+      setError('Impossible de charger les quiz assignés.');
     } finally {
       setLoading(false);
     }

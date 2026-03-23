@@ -1,42 +1,61 @@
-export type QuestionType = 'multiple_choice' | 'true_false';
+export type QuestionType = 'MULTIPLE_CHOICE' | 'SINGLE_CHOICE' | 'FREE_TEXT';
+export type PointsType = 'STANDARD' | 'DOUBLE' | 'NONE';
 
 export interface QuizQuestion {
   id: string;
-  text: string;
+  question: string;
   type: QuestionType;
-  options: string[];
-  correctAnswer: number; // index de la réponse correcte
+  coverImage?: string;
+  options?: string[]; // Sauf pour FREE_TEXT
+  correctAnswer: string; // Index ou texte
   points: number;
+  pointsType: PointsType;
+  duration?: number; // secondes
+  order: number;
 }
 
 export interface Quiz {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   subject: string;
+  coverImage?: string;
   createdBy: string;
   createdAt: string;
+  updatedAt: string;
   questions: QuizQuestion[];
-  timeLimit?: number; // en minutes
-  status: 'draft' | 'published';
-  assignedTo?: string[]; // IDs des élèves
+  duration?: number; // Total (optionnel)
+  status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+  
+  _count?: {
+    questions: number;
+    results: number;
+    assignments: number;
+  };
 }
 
-export interface QuizAttempt {
+export interface QuizAssignment {
   id: string;
   quizId: string;
   studentId: string;
-  answers: Record<string, number>; // questionId -> selectedOptionIndex
-  score: number;
-  maxScore: number;
-  completedAt: string;
-  timeSpent: number; // en secondes
+  dueDate?: string;
+  assignedAt: string;
 }
 
 export interface QuizResult {
-  attempt: QuizAttempt;
-  quiz: Quiz;
-  correctAnswers: number;
-  totalQuestions: number;
-  percentage: number;
+  id: string;
+  quizId: string;
+  studentId: string;
+  score: number;
+  answers: string; // JSON
+  timeSpent: number;
+  startedAt: string;
+  completedAt: string;
+  student?: {
+    user: {
+      firstName: string;
+      lastName: string;
+      avatar?: string;
+    };
+  };
 }
