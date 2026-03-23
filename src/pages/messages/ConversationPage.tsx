@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useNotifications } from '@/contexts/NotificationContext';
 import { api } from '@/lib/api';
-import { Button } from '@/components/ui/Button';
-import { ArrowLeft, Send } from 'lucide-react';
+import { ArrowLeft, Send, ShieldCheck } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
@@ -22,12 +20,12 @@ interface Participant {
   firstName: string;
   lastName: string;
   role: string;
+  avatar: string | null;
 }
 
 export function ConversationPage() {
   const { conversationId } = useParams<{ conversationId: string }>();
   const { user } = useAuth();
-  const { addNotification } = useNotifications();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [otherUser, setOtherUser] = useState<Participant | null>(null);
@@ -38,6 +36,13 @@ export function ConversationPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messageInputRef = useRef<HTMLTextAreaElement>(null);
   const [liveRegionMessage, setLiveRegionMessage] = useState('');
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+  const getAvatarUrl = (avatar: string | null | undefined) => {
+    if (!avatar) return null;
+    if (avatar.startsWith('http') || avatar.startsWith('data:')) return avatar;
+    return `${backendUrl}${avatar}`;
+  };
 
   // Charger messages
   useEffect(() => {
@@ -65,20 +70,7 @@ export function ConversationPage() {
 
       const response = await api.get(`/messages/conversations/${conversationId}`);
       if (response.data.success) {
-        const newMessages = response.data.messages;
-
-        // Détecter nouveaux messages pour annonce vocale
-        if (silent && messages.length > 0 && newMessages.length > messages.length) {
-          const lastMessage = newMessages[newMessages.length - 1];
-          if (lastMessage.senderId !== user?.id) {
-            // Nouveau message reçu
-            setLiveRegionMessage(`Nouveau message de ${otherUser?.firstName} : ${lastMessage.content}`);
-            // Nettoyer après annonce
-            setTimeout(() => setLiveRegionMessage(''), 100);
-          }
-        }
-
-        setMessages(newMessages);
+        setMessages(response.data.messages);
       }
 
       // Récupérer infos conversation
@@ -139,94 +131,105 @@ export function ConversationPage() {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <p className="text-center text-gray-600">Chargement de la conversation...</p>
+      <div className="h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+          <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Ouverture de la discussion...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* ✅ ACCESSIBILITÉ: Live region pour annonces vocales */}
-      <div
-        aria-live="polite"
-        aria-atomic="true"
-        className="sr-only"
-      >
+    <div className="flex flex-col h-screen bg-[#f8fafc]">
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
         {liveRegionMessage}
       </div>
 
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-4 py-4">
-        <div className="max-w-4xl mx-auto flex items-center gap-4">
-          <Link
-            to="/messages"
-            className="text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded p-2"
-            aria-label="Retour à la liste des conversations"
-          >
-            <ArrowLeft size={24} />
-          </Link>
+      <header className="bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link
+              to="/messages"
+              className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-all"
+            >
+              <ArrowLeft size={20} />
+            </Link>
 
-          {otherUser && (
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">
-                {otherUser.firstName} {otherUser.lastName}
-              </h1>
-              <p className="text-sm text-gray-600">
-                {otherUser.role === 'TEACHER'
-                  ? 'Professeur'
-                  : otherUser.role === 'PARENT'
-                    ? 'Parent'
-                    : otherUser.role === 'STUDENT'
-                      ? 'Élève'
-                      : 'École'}
-              </p>
-            </div>
-          )}
+            {otherUser && (
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-100 border border-white shadow-sm">
+                  {getAvatarUrl(otherUser.avatar) ? (
+                    <img src={getAvatarUrl(otherUser.avatar)!} alt={otherUser.firstName} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-primary-50 text-primary-600 font-black text-sm">
+                      {otherUser.firstName[0]}{otherUser.lastName[0]}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <h1 className="text-base font-black text-gray-900 leading-tight">
+                    {otherUser.firstName} {otherUser.lastName}
+                  </h1>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-primary-500">
+                    {otherUser.role === 'TEACHER' ? 'Professeur' : 'Parent'}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
       {/* Messages */}
-      <main className="flex-1 overflow-y-auto bg-gray-50 px-4 py-6">
-        <div className="max-w-4xl mx-auto">
+      <main className="flex-1 overflow-y-auto px-4 py-8 custom-scrollbar">
+        <div className="max-w-4xl mx-auto space-y-6">
           {messages.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-600">Aucun message pour le moment. Commencez la conversation !</p>
+            <div className="text-center py-20 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm">
+              <div className="w-16 h-16 bg-gray-50 text-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Send size={32} />
+              </div>
+              <h2 className="text-xl font-black text-gray-900 mb-2">Dites bonjour !</h2>
+              <p className="text-gray-500 font-medium">Lancez la discussion pour organiser vos séances.</p>
             </div>
           ) : (
-            /* ✅ ACCESSIBILITÉ: role="log" pour les messages */
-            <div role="log" aria-label="Fil de la conversation" className="space-y-4">
-              {messages.map((message) => {
+            <div role="log" aria-label="Fil de la conversation" className="space-y-6">
+              {messages.map((message, index) => {
                 const isOwn = message.senderId === user?.id;
-                const sender = isOwn ? 'Vous' : `${otherUser?.firstName}`;
+                const showAvatar = index === 0 || messages[index-1].senderId !== message.senderId;
 
                 return (
-                  <div
-                    key={message.id}
-                    className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <article
-                      className={`max-w-[70%] px-4 py-3 rounded-lg ${isOwn
-                          ? 'bg-primary-600 text-white'
-                          : 'bg-white text-gray-900 border border-gray-200'
-                        }`}
-                      /* ✅ ACCESSIBILITÉ: aria-label explicite */
-                      aria-label={`Message de ${sender} envoyé ${formatDistanceToNow(new Date(message.createdAt), { addSuffix: true, locale: fr })}`}
-                    >
-                      {!isOwn && (
-                        <p className="text-sm font-semibold mb-1">{sender}</p>
+                  <div key={message.id} className={`flex items-end gap-3 ${isOwn ? 'flex-row-reverse' : 'flex-row'}`}>
+                    {/* Avatar miniature sur le côté */}
+                    <div className="w-8 h-8 flex-shrink-0 mb-1 opacity-0 sm:opacity-100">
+                      {showAvatar && !isOwn && otherUser && (
+                         <div className="w-full h-full rounded-lg overflow-hidden bg-gray-100 border border-white shadow-sm">
+                            {getAvatarUrl(otherUser.avatar) ? (
+                              <img src={getAvatarUrl(otherUser.avatar)!} alt="" className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-primary-50 text-primary-600 font-black text-[10px]">
+                                {otherUser.firstName[0]}{otherUser.lastName[0]}
+                              </div>
+                            )}
+                         </div>
                       )}
-                      <p className="text-base break-words">{message.content}</p>
-                      <time
-                        className={`text-xs mt-1 block ${isOwn ? 'text-primary-100' : 'text-gray-500'}`}
-                        dateTime={message.createdAt}
+                    </div>
+
+                    <div className={`max-w-[80%] sm:max-w-[70%] flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
+                      <div
+                        className={`px-5 py-3 rounded-[1.5rem] text-sm leading-relaxed shadow-sm transition-all hover:shadow-md ${
+                          isOwn
+                            ? 'bg-primary-600 text-white rounded-br-none'
+                            : 'bg-white text-gray-800 border border-gray-100 rounded-bl-none'
+                        }`}
                       >
-                        {formatDistanceToNow(new Date(message.createdAt), {
-                          addSuffix: true,
-                          locale: fr,
-                        })}
+                        {message.content}
+                      </div>
+                      <time className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1 px-1">
+                        {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true, locale: fr })}
                       </time>
-                    </article>
+                    </div>
                   </div>
                 );
               })}
@@ -236,13 +239,10 @@ export function ConversationPage() {
         </div>
       </main>
 
-      {/* Zone envoi */}
-      <footer className="bg-white border-t border-gray-200 px-4 py-4">
+      {/* Input Zone */}
+      <footer className="bg-white/80 backdrop-blur-md border-t border-gray-100 px-6 py-6 pb-8">
         <div className="max-w-4xl mx-auto">
-          <form onSubmit={handleSendMessage} className="flex gap-3">
-            <label htmlFor="message-input" className="sr-only">
-              Votre message
-            </label>
+          <form onSubmit={handleSendMessage} className="relative flex items-end gap-3 bg-gray-50 p-2 rounded-[2rem] border border-gray-100 focus-within:bg-white focus-within:border-primary-100 transition-all shadow-inner">
             <textarea
               id="message-input"
               ref={messageInputRef}
@@ -256,24 +256,25 @@ export function ConversationPage() {
               }}
               placeholder="Écrivez votre message..."
               rows={1}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
-              aria-label="Tapez votre message. Appuyez sur Entrée pour envoyer, Shift+Entrée pour nouvelle ligne"
+              className="flex-1 bg-transparent px-4 py-3 text-sm font-medium text-gray-700 outline-none resize-none max-h-32"
               disabled={sending}
             />
-            <Button
+            <button
               type="submit"
               disabled={!newMessage.trim() || sending}
-              aria-label="Envoyer le message"
-              className="flex-shrink-0"
+              className="w-12 h-12 flex items-center justify-center bg-primary-600 hover:bg-primary-700 disabled:bg-gray-200 text-white rounded-2xl shadow-lg shadow-primary-200 transition-all active:scale-90 flex-shrink-0"
             >
-              <Send size={20} className="mr-2" aria-hidden="true" />
-              Envoyer
-            </Button>
+              {sending ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <Send size={20} />}
+            </button>
           </form>
-          <p className="text-xs text-gray-500 mt-2">
-            Appuyez sur <kbd className="px-1 py-0.5 bg-gray-200 rounded">Entrée</kbd> pour envoyer,{' '}
-            <kbd className="px-1 py-0.5 bg-gray-200 rounded">Shift</kbd>+<kbd className="px-1 py-0.5 bg-gray-200 rounded">Entrée</kbd> pour nouvelle ligne
-          </p>
+          <div className="flex items-center justify-between mt-3 px-4">
+             <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">
+               Entrée pour envoyer • Maj+Entrée pour passer à la ligne
+             </p>
+             <p className="text-[10px] font-black text-primary-300 uppercase tracking-widest flex items-center gap-1">
+               <ShieldCheck size={12} /> Sécurisé par Kplonwé
+             </p>
+          </div>
         </div>
       </footer>
     </div>

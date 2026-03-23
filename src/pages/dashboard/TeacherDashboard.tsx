@@ -5,15 +5,27 @@ import { Button } from '@/components/ui/Button';
 import { api } from '@/lib/api';
 import type { LucideIcon } from 'lucide-react';
 import {
-  Edit, CheckCircle, Clock, Award,
-  Trophy, Users, Star, Calendar,
-  BookOpen, MessageSquare,
-  ChevronRight, Plus, ExternalLink, TrendingUp, Circle
+  Users,
+  TrendingUp,
+  ExternalLink,
+  Award,
+  MessageSquare,
+  Star,
+  CheckCircle,
+  Edit,
+  Calendar,
+  BookOpen,
+  Trophy,
+  Clock,
+  Plus,
+  Circle,
+  ChevronRight
 } from 'lucide-react';
 import {
   XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, AreaChart, Area
 } from 'recharts';
+import { QuizManagementView } from './QuizManagementView';
 
 function parseArr(value: unknown): string[] {
   if (!value) return [];
@@ -101,6 +113,7 @@ export function TeacherDashboard() {
     { id: 'my-shifts', label: 'Mes shifts', icon: CheckCircle },
     { id: 'subscriptions', label: 'Abonnements', icon: Users },
     { id: 'my-courses', label: 'Mes cours', icon: BookOpen },
+    { id: 'quizzes', label: 'Mes Quiz', icon: Trophy },
     { id: 'reviews', label: 'Avis', icon: Star },
   ];
 
@@ -114,99 +127,117 @@ export function TeacherDashboard() {
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-12">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-[#0a0f1e] to-[#1e3a8a] pt-12 pb-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="bg-gradient-to-br from-[#0f172a] via-[#1e3a8a] to-[#0f172a] pt-12 pb-36 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-[120px] -mr-64 -mt-64" />
+        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-amber-500/10 rounded-full blur-[100px] -ml-48 -mb-48" />
+        
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
             {/* Avatar + Info */}
-            <div className="flex items-center gap-6">
-              <div className="relative">
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-8 text-center md:text-left">
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-tr from-primary-500 to-amber-500 rounded-full blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
                 {avatarUrl ? (
                   <img
                     src={avatarUrl}
                     alt="Avatar"
-                    className="w-24 h-24 rounded-full border-4 border-white/20 object-cover shadow-xl"
+                    className="relative w-32 h-32 rounded-full border-4 border-white/10 object-cover shadow-2xl"
                   />
                 ) : (
-                  <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center border-4 border-white/20 backdrop-blur-md shadow-xl">
-                    <span className="text-3xl font-bold text-white">{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
+                  <div className="relative w-32 h-32 bg-white/5 rounded-full flex items-center justify-center border-4 border-white/10 backdrop-blur-xl shadow-2xl">
+                    <span className="text-4xl font-black text-white">{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
                   </div>
                 )}
-                <div className="absolute -bottom-1 -right-1 bg-green-500 w-6 h-6 rounded-full border-4 border-[#0a0f1e]" />
+                <div className="absolute bottom-2 right-2 bg-green-500 w-6 h-6 rounded-full border-4 border-[#0f172a] shadow-lg" />
               </div>
 
-              <div>
-                <div className="flex items-center gap-3 flex-wrap">
-                  <h1 className="text-3xl font-bold text-white">{user?.firstName} {user?.lastName}</h1>
-                  {certificationStatus === 'VERIFIED' && (
-                    <span className="bg-primary-500/20 text-primary-300 border border-primary-500/30 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5">
-                      <Award size={14} /> CERTIFIÉ
-                    </span>
-                  )}
-                  {isPremium && (
-                    <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5">
-                      <Star size={14} /> PREMIUM
-                    </span>
-                  )}
-                </div>
-                <p className="text-blue-200 mt-1 font-medium">{specialty} • {user?.teacherProfile?.experience || 0} ans d'expérience</p>
-
-                <div className="flex items-center gap-6 mt-4">
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center text-amber-400">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={16} fill={i < Math.floor(rating) ? 'currentColor' : 'none'} className={i < Math.floor(rating) ? '' : 'text-gray-500'} />
-                      ))}
+              <div className="space-y-4">
+                <div>
+                  <div className="flex items-center justify-center md:justify-start gap-3 flex-wrap mb-2">
+                    <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-none">
+                      {user?.firstName} {user?.lastName}
+                    </h1>
+                    <div className="flex gap-2">
+                      {certificationStatus === 'VERIFIED' && (
+                        <span className="bg-primary-500/20 text-primary-300 border border-primary-500/30 px-3 py-1 rounded-full text-[10px] font-black flex items-center gap-1.5 tracking-widest uppercase">
+                          <Award size={12} /> CERTIFIÉ
+                        </span>
+                      )}
+                      {isPremium && (
+                        <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-full text-[10px] font-black flex items-center gap-1.5 tracking-widest uppercase">
+                          <Star size={12} /> PREMIUM
+                        </span>
+                      )}
                     </div>
-                    <span className="text-white font-bold text-sm">{rating.toFixed(1)}</span>
-                    <span className="text-blue-300 text-xs">({reviewCount} avis)</span>
                   </div>
-                  <div className="flex items-center gap-2 text-white">
-                    <Users size={16} className="text-blue-300" />
-                    <span className="font-bold text-sm">{totalStudents}</span>
-                    <span className="text-blue-300 text-xs">élèves</span>
+                  <p className="text-blue-200 text-lg font-semibold flex items-center justify-center md:justify-start gap-2">
+                    <span className="bg-white/10 px-3 py-1 rounded-lg backdrop-blur-sm border border-white/5">{specialty}</span>
+                    <span className="opacity-50">•</span>
+                    <span className="text-white/80">{user?.teacherProfile?.experience || 0} ans d'expérience</span>
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 py-4 px-6 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-inner">
+                  <div className="flex flex-col items-center md:items-start">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center text-amber-400">
+                        <Star size={16} fill="currentColor" />
+                      </div>
+                      <span className="text-white font-black text-xl">{rating.toFixed(1)}</span>
+                    </div>
+                    <span className="text-blue-300 text-[10px] font-black uppercase tracking-widest">Note ({reviewCount} avis)</span>
                   </div>
-                  <div className="flex items-center gap-2 text-white">
-                    <Trophy size={16} className="text-amber-400" />
-                    <span className="font-bold text-sm">{points}</span>
-                    <span className="text-blue-300 text-xs">points</span>
+
+                  <div className="w-px h-10 bg-white/10 hidden sm:block"></div>
+
+                  <div className="flex flex-col items-center md:items-start">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Users size={18} className="text-primary-400" />
+                      <span className="text-white font-black text-xl">{totalStudents}</span>
+                    </div>
+                    <span className="text-blue-300 text-[10px] font-black uppercase tracking-widest">Élèves actifs</span>
+                  </div>
+
+                  <div className="w-px h-10 bg-white/10 hidden sm:block"></div>
+
+                  <div className="flex flex-col items-center md:items-start">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Trophy size={18} className="text-amber-400" />
+                      <span className="text-white font-black text-xl">{points}</span>
+                    </div>
+                    <span className="text-blue-300 text-[10px] font-black uppercase tracking-widest">Points acquis</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap gap-3">
-              <Link to="/teacher/profile/edit">
-                <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md">
-                  <Edit size={18} className="mr-2" /> Modifier le profil
+            <div className="flex flex-wrap justify-center lg:justify-end gap-4 items-center w-full lg:w-auto mt-6 lg:mt-0 px-4 md:px-0">
+              <Link to="/teacher/profile/edit" className="flex-1 lg:flex-none">
+                <Button className="w-full bg-white/10 text-white border border-white/20 hover:bg-white/20 h-14 px-8 rounded-2xl font-black text-base shadow-xl backdrop-blur-md transition-all active:scale-95">
+                  <Edit size={20} className="mr-3 text-blue-300" /> Modifier le profil
                 </Button>
               </Link>
-              {isProfileComplete ? (
-                <Link to={`/teacher/${user?.id}`} target="_blank">
-                  <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md">
-                    <ExternalLink size={18} className="mr-2" /> Mon profil public
-                  </Button>
-                </Link>
-              ) : (
+              
+              <Link to={isProfileComplete ? `/teacher/${user?.id}` : "#"} target={isProfileComplete ? "_blank" : "_self"} className="flex-1 lg:flex-none">
                 <Button 
-                  onClick={() => alert("Votre profil n'est pas encore complet. Veuillez le remplir à 100% pour le rendre public.")}
-                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md opacity-80 cursor-not-allowed">
-                  <ExternalLink size={18} className="mr-2" /> Mon profil public
+                  onClick={!isProfileComplete ? () => alert("Profil incomplet") : undefined}
+                  className={`w-full h-14 px-8 rounded-2xl font-black text-base transition-all active:scale-95 shadow-xl flex items-center justify-center ${
+                  isProfileComplete 
+                    ? "bg-primary-600 hover:bg-primary-700 text-white border-none shadow-primary-500/20" 
+                    : "bg-white/10 text-white/40 border border-white/10 cursor-not-allowed"
+                }`}>
+                  <ExternalLink size={20} className="mr-3" /> Profil public
                 </Button>
-              )}
-              {certificationStatus === 'VERIFIED' && (
-                <span className="bg-primary-500 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-lg flex items-center gap-2">
-                  <CheckCircle size={18} /> Autorisé à vendre des cours
-                </span>
-              )}
+              </Link>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Column */}
           <div className="lg:w-2/3 space-y-8">
@@ -351,6 +382,10 @@ export function TeacherDashboard() {
 
                 {activeTab === 'reviews' && (
                   <EmptyState icon={Star} title="Aucun avis reçu" description="Les avis de vos élèves apparaîtront ici après leurs sessions." />
+                )}
+
+                {activeTab === 'quizzes' && (
+                  <QuizManagementView />
                 )}
               </div>
             </div>

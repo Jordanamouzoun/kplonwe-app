@@ -112,9 +112,10 @@ export function AppRoutes() {
       } />
 
       {/* ── Quiz ── */}
-      <Route path="/quiz/:quizId/take" element={<ProtectedRoute><MainLayout><QuizTakePage /></MainLayout></ProtectedRoute>} />
-      <Route path="/quiz/:quizId/results" element={<ProtectedRoute><MainLayout><QuizResultsPage /></MainLayout></ProtectedRoute>} />
+      <Route path="/quiz/:id/take" element={<ProtectedRoute><MainLayout><QuizTakePage /></MainLayout></ProtectedRoute>} />
+      <Route path="/quiz/results/:id" element={<ProtectedRoute><MainLayout><QuizResultsPage /></MainLayout></ProtectedRoute>} />
       <Route path="/quiz/create" element={<ProtectedRoute><MainLayout><QuizCreatePage /></MainLayout></ProtectedRoute>} />
+      <Route path="/quiz/edit/:id" element={<ProtectedRoute><MainLayout><QuizCreatePage /></MainLayout></ProtectedRoute>} />
 
       {/* ── Wallet ── */}
       <Route path="/wallet" element={<ProtectedRoute><WalletProtectedRoute /></ProtectedRoute>} />
@@ -127,11 +128,7 @@ export function AppRoutes() {
       <Route path="/teacher/:teacherId" element={<MainLayout><TeacherProfilePage /></MainLayout>} />
 
       {/* ── Recherche professeurs (bloquée aux profs) ── */}
-      <Route path="/teachers" element={
-        user?.role === 'TEACHER'
-          ? <Navigate to="/dashboard" replace />
-          : <MainLayout><TeachersSearchPage /></MainLayout>
-      } />
+      <Route path="/teachers" element={<MainLayout><TeachersSearchPage /></MainLayout>} />
 
       {/* ── Pages privées professeur ── */}
       <Route path="/teacher/profile/edit" element={<ProtectedRoute><MainLayout><TeacherProfileEditPage /></MainLayout></ProtectedRoute>} />

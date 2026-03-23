@@ -4,7 +4,7 @@ import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import {
   Wallet, TrendingUp, TrendingDown, Plus, ArrowUpRight,
-  ArrowDownLeft, CreditCard, Smartphone, AlertCircle
+  ArrowDownLeft, Smartphone
 } from 'lucide-react';
 
 interface Transaction {
@@ -17,16 +17,18 @@ interface Transaction {
 }
 
 export function WalletPage() {
-  const { user } = useAuth();
   const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [showRechargeModal, setShowRechargeModal] = useState(false);
+  const [amount, setAmount] = useState<string>('');
+  const [recharging, setRecharging] = useState(false);
 
   useEffect(() => { loadWallet(); }, []);
 
   async function loadWallet() {
     try {
+      setLoading(true);
       const res = await api.get('/wallet');
       setBalance(res.data?.balance || 0);
       setTransactions(res.data?.transactions || []);
@@ -34,6 +36,34 @@ export function WalletPage() {
       console.error('Erreur wallet:', err);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleRecharge() {
+    const numAmount = parseFloat(amount);
+    if (!numAmount || numAmount < 100) {
+      alert('Montant minimum de recharge: 100 FCFA');
+      return;
+    }
+
+    try {
+      setRecharging(true);
+      // On utilise 'FEDAPAY' par défaut comme demandé par l'utilisateur
+      const res = await api.post('/payments/recharge', {
+        amount: numAmount,
+        method: 'FEDAPAY'
+      });
+
+      if (res.data?.success && res.data.data.url) {
+        // Rediriger vers la page de paiement FedaPay
+        window.location.href = res.data.data.url;
+      } else {
+        throw new Error('Erreur lors de la création de la transaction');
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Une erreur est survenue lors de la recharge');
+    } finally {
+      setRecharging(false);
     }
   }
 
@@ -91,7 +121,8 @@ export function WalletPage() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 onClick={() => setShowRechargeModal(true)}
-                className="bg-white text-primary-700 hover:bg-gray-50 shadow-lg"
+                variant="primary"
+                className="!bg-white !text-primary-700 hover:!bg-gray-50 shadow-lg border-none"
               >
                 <Plus size={18} className="mr-2" />
                 Recharger
@@ -203,41 +234,57 @@ export function WalletPage() {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Montant (FCFA)</label>
                   <input
                     type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
                     placeholder="5000"
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
                   />
+                  <p className="mt-2 text-xs text-gray-500">
+                    * Des frais de plateforme de 15% seront appliqués.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <p className="text-sm font-semibold text-gray-700 mb-1">Résumé</p>
+                  <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Montant brut</span>
+                      <span className="font-medium text-gray-900">{parseFloat(amount || '0').toLocaleString()} FCFA</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Frais (15%)</span>
+                      <span className="font-medium text-red-600">-{Math.round(parseFloat(amount || '0') * 0.15).toLocaleString()} FCFA</span>
+                    </div>
+                    <div className="border-t border-gray-200 pt-2 flex justify-between font-bold">
+                      <span className="text-gray-900">Solde net crédité</span>
+                      <span className="text-primary-600">{Math.round(parseFloat(amount || '0') * 0.85).toLocaleString()} FCFA</span>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-gray-700 mb-3">Moyen de paiement</p>
 
-                  <button className="w-full flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition">
-                    <Smartphone className="text-orange-600" size={24} />
+                  <button 
+                    onClick={handleRecharge}
+                    disabled={recharging || !amount}
+                    className="w-full flex items-center gap-3 p-4 border-2 border-primary-500 bg-primary-50 rounded-lg hover:bg-primary-100 transition disabled:opacity-50"
+                  >
+                    <Smartphone className="text-primary-600" size={24} />
                     <div className="flex-1 text-left">
-                      <p className="font-semibold text-gray-900">MoMo Pay</p>
-                      <p className="text-xs text-gray-600">Orange Money</p>
-                    </div>
-                  </button>
-
-                  <button className="w-full flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition">
-                    <Smartphone className="text-blue-600" size={24} />
-                    <div className="flex-1 text-left">
-                      <p className="font-semibold text-gray-900">Moov Money</p>
-                      <p className="text-xs text-gray-600">Moov Africa</p>
-                    </div>
-                  </button>
-
-                  <button className="w-full flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition">
-                    <CreditCard className="text-purple-600" size={24} />
-                    <div className="flex-1 text-left">
-                      <p className="font-semibold text-gray-900">Carte bancaire</p>
-                      <p className="text-xs text-gray-600">Visa / Mastercard</p>
+                      <p className="font-semibold text-gray-900 italic">Payer avec FedaPay</p>
+                      <p className="text-xs text-gray-600">MoMo, Moov, Carte (Bénin & Togo)</p>
                     </div>
                   </button>
                 </div>
 
-                <Button fullWidth className="mt-6">
-                  Continuer
+                <Button 
+                  onClick={handleRecharge} 
+                  disabled={recharging || !amount}
+                  fullWidth 
+                  className="mt-6"
+                >
+                  {recharging ? 'Traitement...' : 'Payer maintenant'}
                 </Button>
               </div>
             </div>

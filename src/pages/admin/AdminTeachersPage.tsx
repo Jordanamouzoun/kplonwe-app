@@ -14,6 +14,7 @@ interface Teacher {
     email: string;
     phone?: string;
   };
+  isPremium: boolean;
   profile?: {
     bio?: string;
     subjects?: string[];
@@ -22,12 +23,12 @@ interface Teacher {
   };
 }
 
-type Status = 'PENDING' | 'VERIFIED' | 'REJECTED';
+type FilterStatus = 'ALL' | 'CERTIFIED' | 'STANDARD';
 
 export function AdminTeachersPage() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'ALL' | Status>('ALL');
+  const [filter, setFilter] = useState<FilterStatus>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => { loadTeachers(); }, []);
@@ -35,9 +36,6 @@ export function AdminTeachersPage() {
   async function loadTeachers() {
     try {
       const res = await api.get('/admin/teachers');
-      console.log('Réponse API:', res.data); // Debug
-
-      // S'assurer que c'est toujours un tableau
       let teachersData = [];
 
       if (Array.isArray(res.data)) {
@@ -51,69 +49,50 @@ export function AdminTeachersPage() {
       setTeachers(teachersData);
     } catch (err) {
       console.error('Erreur:', err);
-      setTeachers([]); // Toujours un tableau même en cas d'erreur
+      setTeachers([]);
     } finally {
       setLoading(false);
     }
   }
 
-  const handleValidate = async (teacherId: string, status: 'VERIFIED' | 'REJECTED') => {
-    if (!confirm(`Confirmer ${status === 'VERIFIED' ? 'la validation' : 'le rejet'} ?`)) return;
+  const handleCertification = async (teacherId: string, action: 'certify' | 'decertify') => {
+    const message = action === 'certify' 
+      ? "Voulez-vous certifier cet enseignant ? Il apparaîtra avec un badge Star/Premium."
+      : "Voulez-vous retirer la certification de cet enseignant ?";
+      
+    if (!confirm(message)) return;
 
     try {
-      // Appeler le bon endpoint selon le status
-      const endpoint = status === 'VERIFIED'
-        ? `/admin/teachers/${teacherId}/validate`
-        : `/admin/teachers/${teacherId}/reject`;
-
-      await api.post(endpoint, {
-        comment: status === 'REJECTED' ? 'Profil incomplet' : 'Profil validé'
-      });
-
+      await api.put(`/admin/teachers/${teacherId}/${action}`);
       loadTeachers();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Erreur lors de la validation');
+      alert(err.response?.data?.message || 'Erreur lors de la modification');
     }
   };
 
   const filteredTeachers = teachers.filter(t => {
-    const matchesFilter = filter === 'ALL' || t.profile?.validationStatus === filter;
+    let matchesFilter = true;
+    if (filter === 'CERTIFIED') matchesFilter = t.isPremium === true;
+    if (filter === 'STANDARD') matchesFilter = t.isPremium === false;
+    
     const matchesSearch = searchQuery === '' ||
       `${t.user?.firstName} ${t.user?.lastName} ${t.user?.email}`.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
-  const statusConfig = {
-    PENDING: { label: 'En attente', icon: Clock, colorClass: 'text-yellow-600', bgClass: 'bg-yellow-100' },
-    VERIFIED: { label: 'Vérifié', icon: CheckCircle, colorClass: 'text-green-600', bgClass: 'bg-green-100' },
-    REJECTED: { label: 'Rejeté', icon: XCircle, colorClass: 'text-red-600', bgClass: 'bg-red-100' },
-  };
-
   const counts = {
     ALL: teachers.length,
-    PENDING: teachers.filter(t => t.profile?.validationStatus === 'PENDING').length,
-    VERIFIED: teachers.filter(t => t.profile?.validationStatus === 'VERIFIED').length,
-    REJECTED: teachers.filter(t => t.profile?.validationStatus === 'REJECTED').length,
+    CERTIFIED: teachers.filter(t => t.isPremium).length,
+    STANDARD: teachers.filter(t => !t.isPremium).length,
   };
-
-  function getStatusBadge(status: Status) {
-    const config = statusConfig[status];
-    const Icon = config.icon;
-    return (
-      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${config.bgClass} ${config.colorClass}`}>
-        <Icon size={14} />
-        {config.label}
-      </span>
-    );
-  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
       {/* Header */}
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Validation des enseignants</h1>
-        <p className="text-sm sm:text-base text-gray-600">Vérifiez et validez les profils des enseignants</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Certification des enseignants</h1>
+        <p className="text-sm sm:text-base text-gray-600">Attribuez ou retirez le statut certifié (Premium) aux enseignants</p>
       </div>
 
       {/* Filters */}
@@ -121,7 +100,7 @@ export function AdminTeachersPage() {
 
         {/* Status tabs */}
         <div className="flex gap-2 mb-4 overflow-x-auto pb-2 -mx-2 px-2 sm:mx-0 sm:px-0">
-          {(['ALL', 'PENDING', 'VERIFIED', 'REJECTED'] as const).map((status) => (
+          {(['ALL', 'CERTIFIED', 'STANDARD'] as const).map((status) => (
             <button
               key={status}
               onClick={() => setFilter(status)}
@@ -130,7 +109,7 @@ export function AdminTeachersPage() {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
             >
-              {status === 'ALL' ? 'Tous' : statusConfig[status].label}
+              {status === 'ALL' ? 'Tous' : status === 'CERTIFIED' ? 'Certifiés' : 'Standards'}
               <span className="ml-2 opacity-75">({counts[status]})</span>
             </button>
           ))}
@@ -166,9 +145,6 @@ export function AdminTeachersPage() {
             {/* Mobile: Cards */}
             <div className="block lg:hidden divide-y divide-gray-100">
               {filteredTeachers.map((teacher) => {
-                const status = teacher.profile?.validationStatus || 'PENDING';
-                const isPending = status === 'PENDING';
-
                 return (
                   <div key={teacher.id} className="p-4">
                     <div className="flex items-start gap-3 mb-3">
@@ -189,18 +165,17 @@ export function AdminTeachersPage() {
                     </div>
 
                     <div className="mb-3">
-                      {getStatusBadge(status)}
+                      {teacher.isPremium ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
+                          <Star size={14} className="fill-current" />
+                          Certifié
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+                          Standard
+                        </span>
+                      )}
                     </div>
-
-                    {teacher.profile?.subjects && teacher.profile.subjects.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        {teacher.profile.subjects.slice(0, 3).map((subject, idx) => (
-                          <span key={idx} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-                            {subject}
-                          </span>
-                        ))}
-                      </div>
-                    )}
 
                     <div className="mb-3">
                       <a
@@ -214,27 +189,28 @@ export function AdminTeachersPage() {
                       </a>
                     </div>
 
-                    {isPending && (
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          onClick={() => handleValidate(teacher.id, 'VERIFIED')}
-                          className="flex-1"
-                        >
-                          <CheckCircle size={14} className="mr-1" />
-                          Valider
-                        </Button>
+                    <div className="flex gap-2">
+                      {teacher.isPremium ? (
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleValidate(teacher.id, 'REJECTED')}
-                          className="flex-1 text-red-600 hover:bg-red-50"
+                          onClick={() => handleCertification(teacher.id, 'decertify')}
+                          className="flex-1 text-red-600 hover:bg-red-50 border-red-200"
                         >
                           <XCircle size={14} className="mr-1" />
-                          Rejeter
+                          Enlever certification
                         </Button>
-                      </div>
-                    )}
+                      ) : (
+                        <Button
+                          size="sm"
+                          onClick={() => handleCertification(teacher.id, 'certify')}
+                          className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white"
+                        >
+                          <CheckCircle size={14} className="mr-1" />
+                          Certifier (Premium)
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 );
               })}
@@ -254,9 +230,6 @@ export function AdminTeachersPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {filteredTeachers.map((teacher) => {
-                    const status = teacher.profile?.validationStatus || 'PENDING';
-                    const isPending = status === 'PENDING';
-
                     return (
                       <tr key={teacher.id} className="hover:bg-gray-50 transition">
                         <td className="px-6 py-4">
@@ -293,10 +266,19 @@ export function AdminTeachersPage() {
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          {getStatusBadge(status)}
+                          {teacher.isPremium ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
+                              <Star size={14} className="fill-current" />
+                              Certifié
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+                              Standard
+                            </span>
+                          )}
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-3">
                             <a
                               href={`/teacher/${teacher.id}`}
                               target="_blank"
@@ -306,25 +288,25 @@ export function AdminTeachersPage() {
                               <Eye size={14} />
                               Voir
                             </a>
-                            {isPending && (
-                              <>
-                                <Button
-                                  size="sm"
-                                  onClick={() => handleValidate(teacher.id, 'VERIFIED')}
-                                >
-                                  <CheckCircle size={14} className="mr-1" />
-                                  Valider
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => handleValidate(teacher.id, 'REJECTED')}
-                                  className="text-red-600 hover:bg-red-50"
-                                >
-                                  <XCircle size={14} className="mr-1" />
-                                  Rejeter
-                                </Button>
-                              </>
+                            {teacher.isPremium ? (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleCertification(teacher.id, 'decertify')}
+                                className="text-red-600 hover:bg-red-50 border-red-200"
+                              >
+                                <XCircle size={14} className="mr-1" />
+                                Retirer certification
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                onClick={() => handleCertification(teacher.id, 'certify')}
+                                className="bg-yellow-600 hover:bg-yellow-700 text-white border-none"
+                              >
+                                <CheckCircle size={14} className="mr-1" />
+                                Certifier (Premium)
+                              </Button>
                             )}
                           </div>
                         </td>
